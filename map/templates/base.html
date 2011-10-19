@@ -231,7 +231,7 @@ $(document).ready(function() {
   var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
   // load filter options
-  $.getJSON("/projects/filters/", function(filters) {
+  $.getJSON(baseUrl + "/projects/filters/", function(filters) {
     
     $.each(filters, function(key, filter) {
       $("<option value='" + filter["id"] + "'>" + filter["name"] + "</option>").appendTo("#" + filter["type"]);
@@ -258,7 +258,7 @@ $(document).ready(function() {
   // loads all project or only one
   var getProjects = function (param) {
 
-    $.getJSON("/projects/", 
+    $.getJSON(baseUrl + "/projects/", 
 
       param, 
       
