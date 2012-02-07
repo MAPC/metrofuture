@@ -17,7 +17,7 @@ PROJECT_STATUS = (
 	('inp', 'In Progress'),
 )
 
-MUNICIPALITIES_TYPES = (
+MUNICIPALITY_TYPE = (
 	('m', 'Multiple'),
 	('s', 'Single'),
 	('r', 'Regional'),
@@ -36,16 +36,17 @@ class Project(models.Model):
 	timing = models.CharField(max_length=50, blank=True, null=True)
 	status = models.CharField(max_length=3, choices=PROJECT_STATUS)
 	municipalities = models.ManyToManyField('Municipality', blank=True, null=True)
-	municipalities_type = models.CharField(max_length=1, choices=MUNICIPALITIES_TYPES)
+	municipalities_type = models.CharField(max_length=1, choices=MUNICIPALITY_TYPE)
 	municipal_specific = models.BooleanField(help_text='Counted as a project in a specific municipality')
 	equity = models.BooleanField('Equity related')
-	community_type = models.ManyToManyField('CommunityType', blank=True, null=True)
-	subregion = models.ManyToManyField('Subregion', blank=True, null=True)	
-	active = models.BooleanField('Map candidate')
 
+	community_types = models.ManyToManyField('CommunityType', blank=True, null=True)
+	subregions = models.ManyToManyField('Subregion', blank=True, null=True)	
 	strategies = models.ManyToManyField('Strategy', blank=True, null=True)
 	goals = models.ManyToManyField('Goal', blank=True, null=True)
 	supergoals = models.ManyToManyField('Supergoal', blank=True, null=True)
+
+	active = models.BooleanField('Map candidate')
 
 	# TODO: cache centroid of unionend municipalities
 
