@@ -121,7 +121,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     'django.contrib.gis',
     'south',
-    'map',
+    'iamap',
     'tastypie',
 )
 

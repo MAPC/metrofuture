@@ -1,4 +1,4 @@
-from map.models import Project, Subregion, CommunityType, Strategy, Goal, Supergoal, Municipality
+from iamap.models import Project, Subregion, CommunityType, Strategy, Goal, Supergoal, Municipality
 from django.contrib.gis import admin
 # from django.contrib.gis import admin
 

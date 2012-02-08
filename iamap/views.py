@@ -3,7 +3,7 @@ from django.utils import simplejson
 
 from django.contrib.gis.db.models import Union
 
-from models import Project, Municipality, Strategy, Goal, Supergoal
+from iamap.models import Project, Municipality, Strategy, Goal, Supergoal
 
 
 def get_projects(request):

@@ -1,7 +1,7 @@
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
-from map.models import Project, CommunityType, Municipality
-from map.tastyhacks import GeoResource
+from iamap.models import Project, CommunityType, Municipality
+from iamap.tastyhacks import GeoResource
 
 class MunicipalityResource(GeoResource):
     class Meta:

@@ -1,6 +1,6 @@
 import os
 from django.contrib.gis.utils import LayerMapping
-from models import Municipality
+from iamap.models import Municipality
 
 town_mapping = {
     'muni_id': 'MUNI_ID',

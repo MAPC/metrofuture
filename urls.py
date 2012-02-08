@@ -7,7 +7,7 @@ admin.autodiscover()
 
 # API
 from tastypie.api import Api
-from map.api import ProjectResource, CommunityTypeResource, MunicipalityResource
+from iamap.api import ProjectResource, CommunityTypeResource, MunicipalityResource
 
 v1_api = Api(api_name='v1')
 v1_api.register(ProjectResource())
@@ -20,10 +20,10 @@ urlpatterns = patterns('',
     # url(r'^metrofuture/', include('metrofuture.foo.urls')),
 
     # returns all projects
-    url(r'^projects/$', 'map.views.get_projects'),
+    url(r'^projects/$', 'iamap.views.get_projects'),
 
     # returns all project filters
-    url(r'^projects/filters/$', 'map.views.get_filters'),
+    url(r'^projects/filters/$', 'iamap.views.get_filters'),
 
     # API
     (r'^api/', include(v1_api.urls)),
