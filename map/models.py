@@ -77,7 +77,7 @@ class Funding(models.Model):
 
 class Municipality(models.Model):
 	""" Municipalities """
-	muni_id = models.IntegerField(primary_key=True)
+	muni_id = models.IntegerField('Muni ID', primary_key=True)
 	name = models.CharField(max_length=50)
 	geometry = models.MultiPolygonField(srid=26986)
 	objects = models.GeoManager()

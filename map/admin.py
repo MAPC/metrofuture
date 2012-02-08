@@ -1,5 +1,5 @@
-from map.models import Project, Subregion, CommunityType, Strategy, Goal, Supergoal
-from django.contrib import admin
+from map.models import Project, Subregion, CommunityType, Strategy, Goal, Supergoal, Municipality
+from django.contrib.gis import admin
 # from django.contrib.gis import admin
 
 
@@ -18,6 +18,10 @@ class ProjectAdmin(admin.ModelAdmin):
     ordering = ['id']
 
 
+class MunicipalityAdmin(admin.OSMGeoAdmin):    
+    list_display = ('name', )
+    search_fields = ['name', ]
+
 
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Subregion, admin.ModelAdmin)
@@ -25,3 +29,4 @@ admin.site.register(CommunityType, admin.ModelAdmin)
 admin.site.register(Strategy, admin.ModelAdmin)
 admin.site.register(Goal, admin.ModelAdmin)
 admin.site.register(Supergoal, admin.ModelAdmin)
+admin.site.register(Municipality, MunicipalityAdmin)
