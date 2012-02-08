@@ -7,11 +7,12 @@ admin.autodiscover()
 
 # API
 from tastypie.api import Api
-from map.api import ProjectResource, CommunityTypeResource
+from map.api import ProjectResource, CommunityTypeResource, MunicipalityResource
 
 v1_api = Api(api_name='v1')
 v1_api.register(ProjectResource())
 v1_api.register(CommunityTypeResource())
+v1_api.register(MunicipalityResource())
 
 urlpatterns = patterns('',
     # Examples:
