@@ -8,7 +8,7 @@ town_mapping = {
     'geometry': 'MULTIPOLYGON',
 }
 
-towns_shp = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data/towns_3857.shp'))
+towns_shp = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data/towns_4326.shp'))
     
 def load_towns(verbose=True):
     lm = LayerMapping(Municipality, towns_shp, town_mapping,
