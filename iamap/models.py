@@ -39,9 +39,9 @@ class Project(models.Model):
 	municipalities_type = models.CharField(max_length=1, choices=MUNICIPALITY_TYPE)
 	municipal_specific = models.BooleanField(help_text='Counted as a project in a specific municipality')
 	equity = models.BooleanField('Equity related')
-
 	community_types = models.ManyToManyField('CommunityType', blank=True, null=True)
 	subregions = models.ManyToManyField('Subregion', blank=True, null=True)	
+
 	strategies = models.ManyToManyField('Strategy', blank=True, null=True)
 	goals = models.ManyToManyField('Goal', blank=True, null=True)
 	supergoals = models.ManyToManyField('Supergoal', blank=True, null=True)
@@ -103,6 +103,7 @@ class Subregion(models.Model):
 
 	def __unicode__(self):
 		return self.abbr
+	
 
 class Strategy(models.Model):
 	"""
@@ -142,6 +143,7 @@ class Supergoal(models.Model):
 	class Meta:
 		verbose_name = _('Supergoal')
 		verbose_name_plural = _('Supergoals')
+		ordering = ['title']
 
 	def __unicode__(self):
 		return self.title

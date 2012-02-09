@@ -7,12 +7,11 @@ admin.autodiscover()
 
 # API
 from tastypie.api import Api
-from iamap.api import ProjectResource, ProjectShortResource, CommunityTypeResource, MunicipalityResource
+from iamap.api import ProjectResource, ProjectShortResource, MunicipalityResource
 
 v1_api = Api(api_name='v1')
 v1_api.register(ProjectResource())
 v1_api.register(ProjectShortResource())
-v1_api.register(CommunityTypeResource())
 v1_api.register(MunicipalityResource())
 
 urlpatterns = patterns('',
@@ -20,11 +19,8 @@ urlpatterns = patterns('',
     url(r'^$', direct_to_template, {'template': 'base.html'}),
     # url(r'^metrofuture/', include('metrofuture.foo.urls')),
 
-    # returns all projects
-    url(r'^projects/$', 'iamap.views.get_projects'),
-
     # returns all project filters
-    url(r'^projects/filters/$', 'iamap.views.get_filters'),
+    url(r'^filters/$', 'iamap.views.get_filters'),
 
     # API
     (r'^api/', include(v1_api.urls)),

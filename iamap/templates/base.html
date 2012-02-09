@@ -142,29 +142,31 @@ margin-right: 20px;
     <!-- MAP FILTERS -->
     <p>
         Municipality: 
-        <select class="mapfilter" id="municipality">
-          <option value="">-- Show all --</option>
-        </select>
-    </p>
-    <p>
-        Strategy: 
-        <select class="mapfilter" id="strategy">
+        <select class="mapfilter" id="municipalities">
           <option value="">-- Show all --</option>
         </select>
     </p>
     <p>
         Goal: 
-        <select class="mapfilter" id="goal">
+        <select class="mapfilter" id="goals">
           <option value="">-- Show all --</option>
         </select>
     </p>
     <p>
         Supergoal: 
-        <select class="mapfilter" id="supergoal">
+        <select class="mapfilter" id="supergoals">
           <option value="">-- Show all --</option>
         </select>
     </p>
-
+    <p>
+        Strategy: 
+        <select class="mapfilter" id="strategies">
+          <option value="">-- Show all --</option>
+        </select>
+    </p>
+    <p>
+      <button id="filter-btn">Apply Filter</button>
+    </p>
 </div>
 </div>
 
@@ -216,6 +218,9 @@ pageTracker._trackPageview();
 $(document).ready(function() {
 
   var baseUrl = "http://localhost:8000";
+
+
+  // build default map
   var map = new L.Map('map');
 
   var basemapUrl = 'http://{s}.tile.cloudmade.com/a16f47619b8943b394e9da2009f89bfa/22677/256/{z}/{x}/{y}.png',
@@ -277,6 +282,88 @@ $(document).ready(function() {
         });
     });
   }
+
+
+  // build filter options
+  $.getJSON(baseUrl + "/filters/",
+    function (filters) {
+      $.each(filters, function (filterKey, filter) {
+        $.each(filter, function (optionKey, option) {
+          $("<option value='" + option.id + "'>" + option.name + "</option>").appendTo(".mapfilter #" + filterKey);
+        });
+        $(".mapfilter #" + filterKey).val("");
+      });        
+  });
+
+
+  // filter projects
+  var filter = {
+    "format": "json"
+  }
+  $(".mapfilter").change(function() {   
+    var selectedFilter = $("option:selected", this);      
+    // remove empty filter criteria or update new filter criteria
+    if (selectedFilter.val() === "") {
+      delete filter[selectedFilter.parent().attr("id")];
+    } else {
+      filter[selectedFilter.parent().attr("id")] = selectedFilter.val();
+    }
+  });
+  $("#filter-btn").bind("click", function () {
+    // determining if a filter was chosen
+    filterLen = 0;
+    for (var i in filter) {
+      filterLen++
+    }
+    if (filterLen === 1) {
+      // show default municipal map
+      $.getJSON(baseUrl + "/api/v1/municipality/", 
+        {"format": "json"},
+        function (data) {
+          // clear map and project layer
+          municipalityLayer.clearLayers();
+          projectLayer.clearLayers();
+          $.renderMunicipalities(data.objects, municipalityLayer);
+      });
+    } else {
+      // call project api
+      $.getJSON(baseUrl + "/api/v1/project/",
+        filter,
+        function (data) {
+          // clear map and project layer
+          municipalityLayer.clearLayers();
+          projectLayer.clearLayers();
+          // build result project array
+          var resultProjects = []
+          $.each(data.objects, function (key, project) {
+            resultProjects.push(project["id"]);
+          });
+          // render municipalities
+          var resultMunicipalities = [];
+          $.each(data.objects, function (key, project) {
+            $.each(project.municipalities, function (key, municipality) {
+              if (resultMunicipalities.indexOf(municipality.muni_id) === -1) {
+                var feature = {
+                  "type": "Feature",
+                  "geometry": municipality.geometry,
+                  "properties": {
+                    "popupContent": "<b>" + municipality.name + "</b><ul>"
+                  }
+                }
+                $.each(municipality.projects, function (key, project) {
+                  if (resultProjects.indexOf(project.id) !== -1) {
+                    feature["properties"]["popupContent"] += "<li><a class='project_uri' onclick='$.showProject("+ project.id +")' href='javascript:void(0)'>" + project.name + "</a></li>";
+                  }
+                });
+                feature["properties"]["popupContent"] += "</ul>";
+                resultMunicipalities.push(municipality.muni_id);
+                municipalityLayer.addGeoJSON(feature);
+              }
+            });
+          });
+      });
+    }
+  });
 
 
   // utils
