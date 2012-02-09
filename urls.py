@@ -7,10 +7,11 @@ admin.autodiscover()
 
 # API
 from tastypie.api import Api
-from iamap.api import ProjectResource, CommunityTypeResource, MunicipalityResource
+from iamap.api import ProjectResource, ProjectShortResource, CommunityTypeResource, MunicipalityResource
 
 v1_api = Api(api_name='v1')
 v1_api.register(ProjectResource())
+v1_api.register(ProjectShortResource())
 v1_api.register(CommunityTypeResource())
 v1_api.register(MunicipalityResource())
 
