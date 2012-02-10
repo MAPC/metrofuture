@@ -4,8 +4,12 @@ from iamap.models import Project, Strategy, Municipality, Goal, Supergoal
 from iamap.tastyhacks import GeoResource
 
 
-class MunicipalityResource(GeoResource):
-    projects = fields.ToManyField('iamap.api.ProjectShortResource', 'projects', full=True)
+class MunicipalityGeoResource(GeoResource):
+    """
+    GeoJSON enabled municipality result.
+    """
+
+    projects = fields.ToManyField('iamap.api.ProjectResource', 'projects', full=True)
 
     class Meta:
         queryset = Municipality.objects.filter(projects__isnull=False).distinct()
@@ -17,6 +21,19 @@ class MunicipalityResource(GeoResource):
             'name': ALL,
             'projects': ALL_WITH_RELATIONS,
         }
+
+
+class MunicipalityResource(ModelResource):
+    class Meta:
+        queryset = Municipality.objects.filter(projects__isnull=False).distinct()
+        allowed_methods = ['get',]
+        excludes = ['geometry',]
+        limit = 200
+        filtering = {
+            'muni_id': ALL,
+            'name': ALL,
+        }
+
 
 class StrategyResource(ModelResource):
     class Meta:
@@ -48,7 +65,11 @@ class SupergoalResource(ModelResource):
             'title': ALL,
         }
 
-class ProjectResource(ModelResource):
+class ProjectMuniResource(ModelResource):
+    """
+    Project resource with municipalities without geometry.
+    """
+
     municipalities = fields.ToManyField(MunicipalityResource, 'municipalities', full=True)
     strategies = fields.ToManyField(StrategyResource, 'strategies', full=True)
     goals = fields.ToManyField(GoalResource, 'goals', full=True)
@@ -69,10 +90,9 @@ class ProjectResource(ModelResource):
             'supergoals': ALL_WITH_RELATIONS,
         }
 
-class ProjectShortResource(ModelResource):
+class ProjectResource(ModelResource):
     """
-    Short project resource without municipalities to save some size in the 
-    GeoJSON results.
+    Project resource without municipalities.
     """
 
     strategies = fields.ToManyField(StrategyResource, 'strategies', full=True)
@@ -81,7 +101,6 @@ class ProjectShortResource(ModelResource):
 
     class Meta:
         queryset = Project.objects.all()
-        resource_name = 'projectshort'
         fields = ['name', 'id', ]
         limit = 200
         allowed_methods = ['get']
