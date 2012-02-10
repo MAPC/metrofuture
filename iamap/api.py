@@ -5,17 +5,17 @@ from iamap.tastyhacks import GeoResource
 
 
 class MunicipalityResource(GeoResource):
-    projects = fields.ToManyField('iamap.api.ProjectShortResource', 'project_set', full=True)
+    projects = fields.ToManyField('iamap.api.ProjectShortResource', 'projects', full=True)
 
     class Meta:
-        queryset = Municipality.objects.filter(project__isnull=False).distinct()
+        queryset = Municipality.objects.filter(projects__isnull=False).distinct()
         resource_name = 'municipality'
         allowed_methods = ['get',]
         limit = 200
         filtering = {
             'muni_id': ALL,
             'name': ALL,
-            'project': ALL_WITH_RELATIONS,
+            'projects': ALL_WITH_RELATIONS,
         }
 
 class StrategyResource(ModelResource):
@@ -71,16 +71,24 @@ class ProjectResource(ModelResource):
 
 class ProjectShortResource(ModelResource):
     """
-    Only project name to save data and avoid recursive problems.
-    There might be a better way to do that, e.g. limit data in related resources.
+    Short project resource without municipalities to save some size in the 
+    GeoJSON results.
     """
+
+    strategies = fields.ToManyField(StrategyResource, 'strategies', full=True)
+    goals = fields.ToManyField(GoalResource, 'goals', full=True)
+    supergoals = fields.ToManyField(SupergoalResource, 'supergoals', full=True)
 
     class Meta:
         queryset = Project.objects.all()
         resource_name = 'projectshort'
         fields = ['name', 'id', ]
+        limit = 200
         allowed_methods = ['get']
         filtering = {
             'id': ALL,
             'name': ALL,
+            'strategies': ALL_WITH_RELATIONS,
+            'goals': ALL_WITH_RELATIONS,
+            'supergoals': ALL_WITH_RELATIONS,
         }
