@@ -223,6 +223,70 @@ $(document).ready(function() {
   var baseUrl = "http://localhost:8000";
 
 
+  // utils
+
+  // AJAX spinner
+  $.spinner = {
+    show: function () {
+      $("#title").css("background", "url('{{ STATIC_URL }}img/spinner.gif') no-repeat right");
+    },
+    hide : function () {
+      $("#title").css("background", "");
+    }
+  }
+
+  // show municipalities with project list in popup
+  $.renderMunicipalities = function(municipalities, layer) {
+    $.each(municipalities, function (key, municipality) {
+      var feature = {
+        "type": "Feature",
+        "geometry": municipality.geometry,
+        "properties": {
+          "popupContent": "<b>" + municipality.name + "</b><ul>"
+        }
+      }
+      $.each(municipality.projects, function (key, project) {
+        feature["properties"]["popupContent"] += "<li><a class='project_uri' onclick='$.showProject("+ project.id +")' href='javascript:void(0)'>" + project.name + "</a></li>";
+      });
+      feature["properties"]["popupContent"] += "</ul>";
+      layer.addGeoJSON(feature);
+    });
+  }
+
+  // called from municipal popup link
+  // renders project municipalities and detail project info
+  $.showProject = function (projectId) {
+    $.spinner.show();
+    $.getJSON(baseUrl + "/api/v1/municipalities/", 
+      {
+        "format": "json",
+        "projects": projectId
+      },
+      function (data) {
+        // clear previous data
+        projectLayer.clearLayers();
+        $("#project-detail").empty();
+        // show project municipalities
+        var municipalities = data.objects;
+        $.renderMunicipalities(municipalities, projectLayer);
+        // show project details beneath map
+        $.getJSON(baseUrl + "/api/v1/projects/" + projectId + "/",
+        { "format": "json"}, 
+        function (project) {
+          $("<h3>" + project.name + "</h3>").appendTo("#project-detail");
+          $("<ul></ul>").appendTo("#project-detail");
+          $.each(project.municipalities, function (key, municipality) {
+            $("<li>" + municipality.name + "</li>").appendTo("#project-detail ul");
+          });
+        });
+        $.spinner.hide();
+    });
+  }
+
+  // page
+
+  $.spinner.show();
+
   // build default map
   var map = new L.Map('map');
 
@@ -261,7 +325,8 @@ $(document).ready(function() {
       e.layer.bindPopup(e.properties.popupContent);
     }   
     e.layer.setStyle({
-      "stroke": false,
+      "weight": 1,
+      "opacity": 0.9,
       "color": "#5D9432", // project specific
       "fillOpacity": 0.4
     });
@@ -277,7 +342,8 @@ $(document).ready(function() {
           $("<option value='" + option.id + "'>" + option.name + "</option>").appendTo(".mapfilter #" + filterKey);
         });
         $(".mapfilter #" + filterKey).val("");
-      });        
+      }); 
+      $.spinner.hide();       
   });
 
 
@@ -299,6 +365,7 @@ $(document).ready(function() {
   });
   // execute filter
   $("#filter-btn").bind("click", function () {
+    $.spinner.show();
     // clear map and project layer
     municipalityLayer.clearLayers();
     projectLayer.clearLayers();
@@ -314,6 +381,7 @@ $(document).ready(function() {
         {"format": "json"},
         function (data) {
           $.renderMunicipalities(data.objects, municipalityLayer);
+          $.spinner.hide();
       });
     } else {
       // query projects with filter
@@ -353,64 +421,16 @@ $(document).ready(function() {
               // render municipalities
               var municipalities = (muniId === "") ? data.objects : [data];
               $.renderMunicipalities(municipalities, municipalityLayer);
+              $.spinner.hide();
           });
         } else {
           $("<h2 class='searchresult'>No Projects found.</h2>").appendTo("#project-detail");
+          $.spinner.hide();
         }
+        
       });
     }
   });
-
-
-  // utils
-
-  // show municipalities with project list in popup
-  $.renderMunicipalities = function(municipalities, layer) {
-    $.each(municipalities, function (key, municipality) {
-      var feature = {
-        "type": "Feature",
-        "geometry": municipality.geometry,
-        "properties": {
-          "popupContent": "<b>" + municipality.name + "</b><ul>"
-        }
-      }
-      $.each(municipality.projects, function (key, project) {
-        feature["properties"]["popupContent"] += "<li><a class='project_uri' onclick='$.showProject("+ project.id +")' href='javascript:void(0)'>" + project.name + "</a></li>";
-      });
-      feature["properties"]["popupContent"] += "</ul>";
-      layer.addGeoJSON(feature);
-    });
-  }
-
-  // called from municipal popup link
-  // renders project municipalities and detail project info
-  $.showProject = function (projectId) {
-    $.getJSON(baseUrl + "/api/v1/municipalities/", 
-      {
-        "format": "json",
-        "projects": projectId
-      },
-      function (data) {
-        // clear previous data
-        projectLayer.clearLayers();
-        $("#project-detail").empty();
-        // show project municipalities
-        var municipalities = data.objects;
-        $.renderMunicipalities(municipalities, projectLayer);
-        // show project details beneath map
-        $.getJSON(baseUrl + "/api/v1/projects/" + projectId + "/",
-        { "format": "json"}, 
-        function (project) {
-          $("<h3>" + project.name + "</h3>").appendTo("#project-detail");
-          $("<ul></ul>").appendTo("#project-detail");
-          $.each(project.municipalities, function (key, municipality) {
-            $("<li>" + municipality.name + "</li>").appendTo("#project-detail ul");
-          });
-        });
-    });
-  }
-  
- 
 });
 
 </script>
