@@ -13,7 +13,7 @@ class MunicipalityGeoResource(GeoResource):
 
     class Meta:
         queryset = Municipality.objects.filter(projects__isnull=False).distinct()
-        resource_name = 'municipality'
+        resource_name = 'municipalities'
         allowed_methods = ['get',]
         limit = 200
         filtering = {
@@ -24,6 +24,9 @@ class MunicipalityGeoResource(GeoResource):
 
 
 class MunicipalityResource(ModelResource):
+    """
+    Municipality short-info without geometry as property in Project Muni List.
+    """
     class Meta:
         queryset = Municipality.objects.filter(projects__isnull=False).distinct()
         allowed_methods = ['get',]
@@ -67,7 +70,7 @@ class SupergoalResource(ModelResource):
 
 class ProjectMuniResource(ModelResource):
     """
-    Project resource with municipalities without geometry.
+    All Project details without geometry.
     """
 
     municipalities = fields.ToManyField(MunicipalityResource, 'municipalities', full=True)
@@ -77,7 +80,7 @@ class ProjectMuniResource(ModelResource):
 
     class Meta:
         queryset = Project.objects.all().distinct()
-        resource_name = 'project'
+        resource_name = 'projects'
         fields = ['id','name',]
         limit = 200
         allowed_methods = ['get']
@@ -92,7 +95,7 @@ class ProjectMuniResource(ModelResource):
 
 class ProjectResource(ModelResource):
     """
-    Project resource without municipalities.
+    Project short-info as property in municipality.
     """
 
     strategies = fields.ToManyField(StrategyResource, 'strategies', full=True)

@@ -10,7 +10,7 @@ def get_filters(request):
     """
     Returns a JSON object with lists of all available filters.
     """
-    municipalities = Municipality.objects.filter(project__isnull=False).distinct()
+    municipalities = Municipality.objects.filter(projects__isnull=False).distinct()
     strategies = Strategy.objects.filter(project__isnull=False).distinct()
     goals = Goal.objects.filter(project__isnull=False).distinct()
     supergoals = Supergoal.objects.filter(project__isnull=False).distinct()
