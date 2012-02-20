@@ -4,17 +4,21 @@ from django.contrib.gis import admin
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    # fieldsets = [
-    #     (None, 
-    #         {'fields': ['name', 'slug', 'survey_active', 'districtid', 'survey_incentive']}),
-    #     ('School Database Attributes', 
-    #         {'fields': ['schid', 'address', 'town', 'state', 'zip', 'principal', 'phone', 'fax', 'grades', 'schl_type']}),
-    #     ('Map',
-    #         {'fields': ['geometry', ]}),
-    # ]    
-    list_filter = ['active']
+    fieldsets = [
+        (None, 
+            {'fields': ['name', 'desc', 'url', 'thumbnail', ]}),
+        ('MetroFuture', 
+            {'fields': ['strategies', 'goals', 'supergoals', ]}),
+        ('Collaborations', 
+            {'fields': ['lead_dept', 'collab_dept', 'collab_ext', 'client', 'funding', ]}),
+        ('Regional properties',
+            {'fields': ['municipalities_type', 'municipal_specific', 'community_types', 'municipalities', 'subregions', 'active', ]}),
+        ('Other project properties',
+            {'fields': ['timing', 'status', 'equity', ]}),
+    ]    
+    list_filter = ['supergoals', 'goals', ]
     list_display = ('pk', 'name', )
-    search_fields = ['name']
+    search_fields = ['name', 'desc']
     ordering = ['id']
 
 
@@ -23,10 +27,37 @@ class MunicipalityAdmin(admin.OSMGeoAdmin):
     search_fields = ['name', ]
 
 
+class CommunityTypeAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'abbr', 'name', )
+    list_editable = ('abbr', 'name', )
+
+
+class GoalAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'nr', 'title', )
+    list_editable = ('nr', 'title', )
+    ordering = ['id']
+
+
+class SupergoalAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'abbr', 'title', )
+    list_editable = ('abbr', 'title', )
+
+
+class StrategyAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'nr', 'title', )
+    list_editable = ('nr', 'title', )
+    ordering = ['id']
+
+
+class SubregionAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'abbr', 'name', )
+    list_editable = ('abbr', 'name', )
+
+
 admin.site.register(Project, ProjectAdmin)
-admin.site.register(Subregion, admin.ModelAdmin)
-admin.site.register(CommunityType, admin.ModelAdmin)
-admin.site.register(Strategy, admin.ModelAdmin)
-admin.site.register(Goal, admin.ModelAdmin)
-admin.site.register(Supergoal, admin.ModelAdmin)
+admin.site.register(Subregion, SubregionAdmin)
+admin.site.register(CommunityType, CommunityTypeAdmin)
+admin.site.register(Strategy, StrategyAdmin)
+admin.site.register(Goal, GoalAdmin)
+admin.site.register(Supergoal, SupergoalAdmin)
 admin.site.register(Municipality, MunicipalityAdmin)

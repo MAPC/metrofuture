@@ -137,8 +137,8 @@ class Project(models.Model):
 	MetroFuture projects; core class for map
 	"""
 	name = models.CharField(max_length=250)
-	desc = models.TextField('Short Description', blank=True, null=True)
-	url = models.URLField('Project url', blank=True, null=True)
+	desc = models.TextField('Short description', blank=True, null=True)
+	url = models.URLField('Project URL', blank=True, null=True)
 	thumbnail = models.ImageField('Project picture', help_text='Image dimensions should be 160x120', upload_to='project_tn', blank=True, null=True)
 	lead_dept = models.ForeignKey(Department, related_name='lead')
 	collab_dept = models.ManyToManyField(Department, related_name='collab', blank=True, null=True)
@@ -158,9 +158,7 @@ class Project(models.Model):
 	goals = models.ManyToManyField(Goal, blank=True, null=True)
 	supergoals = models.ManyToManyField(Supergoal, blank=True, null=True)
 
-	active = models.BooleanField('Map candidate')
-
-	# TODO: cache centroid of unionend municipalities
+	active = models.BooleanField('Shown on map', help_text='Not yet implemented.')
 
 	def __unicode__(self):
 		return self.name
