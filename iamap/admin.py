@@ -16,7 +16,7 @@ class ProjectAdmin(admin.ModelAdmin):
         ('Other project properties',
             {'fields': ['timing', 'status', 'equity', ]}),
     ]    
-    list_filter = ['supergoals', 'goals', ]
+    list_filter = ['goals', 'supergoals', 'strategies', ]
     list_display = ('pk', 'name', )
     search_fields = ['name', 'desc']
     ordering = ['id']
