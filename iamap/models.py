@@ -137,6 +137,9 @@ class Project(models.Model):
 	MetroFuture projects; core class for map
 	"""
 	name = models.CharField(max_length=250)
+	desc = models.TextField('Short Description', blank=True, null=True)
+	url = models.URLField('Project url', blank=True, null=True)
+	thumbnail = models.ImageField('Project picture', help_text='Image dimensions should be 160x120', upload_to='project_tn', blank=True, null=True)
 	lead_dept = models.ForeignKey(Department, related_name='lead')
 	collab_dept = models.ManyToManyField(Department, related_name='collab', blank=True, null=True)
 	collab_ext = models.CharField('External Collaborator', max_length=50, blank=True, null=True)
