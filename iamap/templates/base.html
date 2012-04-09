@@ -77,9 +77,14 @@ margin-right: 20px;
     background-color: #fff;
     margin-top: 0px;
   }
-  #project-detail h3 {
+  #project-detail h3, #project-detail h3 a {
     color: #5D9432;
     margin-left: 0px;
+    clear: left;
+  }
+  #project-detail .thumbnail {
+    float: left;
+    margin: 12px 6px 12px 0;
   }
   .content h2.title {
     margin-bottom: 12px !important;
@@ -250,6 +255,12 @@ $(document).ready(function() {
     }
   }
 
+  // eliminate linebreaks in retrieved json
+  $.removeLnBr = function(txt) {
+    var parsedTxt = str_replace(chr(10), "", txt);
+    return str.replace(chr(13), "", parsedTxt);
+  }
+
   // show municipalities with project list in popup
   $.renderMunicipalities = function(municipalities, layer) {
     $.each(municipalities, function (key, municipality) {
@@ -288,11 +299,10 @@ $(document).ready(function() {
         $.getJSON(baseUrl + "/api/v1/projects/" + projectId + "/",
         { "format": "json"}, 
         function (project) {
+          if (project.url !== "") project.name = "<a href='" + project.url + "' target='_blank'>" + project.name + "</a>";
           $("<h3>" + project.name + "</h3>").appendTo("#project-detail");
-          $("<ul></ul>").appendTo("#project-detail");
-          $.each(project.municipalities, function (key, municipality) {
-            $("<li>" + municipality.name + "</li>").appendTo("#project-detail ul");
-          });
+          if (project.thumbnail) $("<img class='thumbnail' src='" + project.thumbnail + "' width='160' height='120'>").appendTo("#project-detail");
+          if (project.desc !== "") $("<p>" + project.desc.replace(/\r\n/g, "<br />").replace(/\n/g, "<br/>") + "</p>").appendTo("#project-detail");
         });
         $.spinner.hide();
     });
@@ -303,7 +313,9 @@ $(document).ready(function() {
   $.spinner.show();
 
   // build default map
-  var map = new L.Map('map');
+  var map = new L.Map('map',{
+    minZoom: 9
+  });
 
   var basemapUrl = 'http://{s}.tile.cloudmade.com/a16f47619b8943b394e9da2009f89bfa/22677/256/{z}/{x}/{y}.png',
     basemapAttrib = 'Map data &copy; 2012 OpenStreetMap contributors, Imagery &copy; 2012 CloudMade',
@@ -411,11 +423,10 @@ $(document).ready(function() {
           $("<h2 class='searchresult'>" + resultCount + " " + projectNoun + " found:</h2>").appendTo("#project-detail");
           // project list
           $.each(resultProjects, function (key, project) {
+            if (project.url !== "") project.name = "<a href='" + project.url + "' target='_blank'>" + project.name + "</a>";
             $("<h3>" + project.name + "</h3>").appendTo("#project-detail");
-            $("<ul></ul>").appendTo("#project-detail");
-            $.each(project.municipalities, function (key, municipality) {
-              $("<li>" + municipality.name + "</li>").appendTo("#project-detail ul");
-            });
+            if (project.thumbnail) $("<img class='thumbnail' src='" + project.thumbnail + "' width='160' height='120'>").appendTo("#project-detail");
+            if (project.desc !== "") $("<p>" + project.desc.replace(/\r\n/g, "<br />").replace(/\n/g, "<br/>") + "</p>").appendTo("#project-detail");
           });
           // build municipal filter, prepend "projects__" or get by muni_id
           var muniFilter = {};

@@ -81,7 +81,7 @@ class ProjectMuniResource(ModelResource):
     class Meta:
         queryset = Project.objects.all().distinct()
         resource_name = 'projects'
-        fields = ['id','name',]
+        fields = ['id', 'name', 'url', 'desc', 'thumbnail']
         limit = 200
         allowed_methods = ['get']
         filtering = {
@@ -104,7 +104,7 @@ class ProjectResource(ModelResource):
 
     class Meta:
         queryset = Project.objects.all()
-        fields = ['name', 'id', 'status']
+        fields = ['name', 'id', 'status',]
         limit = 200
         allowed_methods = ['get']
         filtering = {
