@@ -33,3 +33,10 @@ urlpatterns = patterns('',
     # Grappelli admin
     (r'^grappelli/', include('grappelli.urls')),
 )
+
+
+from django.conf import settings
+
+urlpatterns += patterns('',
+    (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+)
