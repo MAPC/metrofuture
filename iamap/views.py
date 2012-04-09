@@ -3,7 +3,7 @@ from django.utils import simplejson
 
 from django.contrib.gis.db.models import Union
 
-from iamap.models import Project, Municipality, Strategy, Goal, Supergoal
+from iamap.models import Project, Municipality, Strategy, Goal, Supergoal, PROJECT_STATUS
 
 
 def get_filters(request):
@@ -20,6 +20,7 @@ def get_filters(request):
         'strategies': [],
         'goals': [],
         'supergoals': [],
+        'status': [],
     }
 
     for municipality in municipalities:
@@ -41,6 +42,11 @@ def get_filters(request):
         response['supergoals'].append(dict(
             id=supergoal.id,
             name=supergoal.title,   
+        ))
+    for k,v in PROJECT_STATUS:
+        response['status'].append(dict(
+            id=k,
+            name=v,
         ))
 
     return HttpResponse(simplejson.dumps(response), mimetype='application/json')

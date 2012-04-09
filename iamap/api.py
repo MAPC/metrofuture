@@ -104,7 +104,7 @@ class ProjectResource(ModelResource):
 
     class Meta:
         queryset = Project.objects.all()
-        fields = ['name', 'id', ]
+        fields = ['name', 'id', 'status']
         limit = 200
         allowed_methods = ['get']
         filtering = {
@@ -113,4 +113,5 @@ class ProjectResource(ModelResource):
             'strategies': ALL_WITH_RELATIONS,
             'goals': ALL_WITH_RELATIONS,
             'supergoals': ALL_WITH_RELATIONS,
+            'status': ALL,
         }
