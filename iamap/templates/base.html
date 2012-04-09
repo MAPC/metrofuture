@@ -61,6 +61,17 @@ margin-right: 20px;
     width: 624px;
     height: 468px;
   }
+  .mapfilter {
+    width: 134px;
+    margin-left: 6px;
+    margin-bottom: 6px;
+  }
+  .filterlabel {
+    width: 60px;
+    color: #FFFFFF;
+    padding: 0 12px;
+    float: left;
+  }
   #main {
     width: 624px;
     background-color: #fff;
@@ -69,6 +80,9 @@ margin-right: 20px;
   #project-detail h3 {
     color: #5D9432;
     margin-left: 0px;
+  }
+  .content h2.title {
+    margin-bottom: 12px !important;
   }
   h2.searchresult {
     margin-left: 0px;
@@ -125,8 +139,8 @@ margin-right: 20px;
 <li class="menu-1-3-2"><a href="http://www.metrofuture.org/strategies" class="menu-1-3-2">Implementation Strategies</a></li>
 <li class="menu-1-4-2"><a href="http://www.metrofuture.org/content/metrofuture-walks-and-talks" class="menu-1-4-2">MetroFuture Walks &amp; Talks</a></li>
 <li class="menu-1-5-2"><a href="http://www.metrofuture.org/content/regional-events" class="menu-1-5-2">Regional Events</a></li>
-<li class="menu-1-6-2"><a href="http://www.metrofuture.org/content/measuring-progress" title="Measuring Progress" class="menu-1-6-2">Measuring Progress</a></li>
-<li class="menu-1-7-2-active"><a href="http://www.metrofuture.org/content/get-involved-mapc-action-campaigns" class="active menu-1-7-2-active active">Advocacy</a></li>
+<li class="menu-1-6-2-active"><a href="http://www.metrofuture.org/content/measuring-progress" title="Measuring Progress" class="active menu-1-6-2-active">Measuring Progress</a></li>
+<li class="menu-1-7-2"><a href="http://www.metrofuture.org/content/get-involved-mapc-action-campaigns" class="menu-1-7-2">Advocacy</a></li>
 <li class="last menu-1-8-2"><a href="http://www.metrofuture.org/contact" class="menu-1-8-2">Contact</a></li>
 </ul>    </div>
 
@@ -143,30 +157,26 @@ margin-right: 20px;
     <h2 class="title"><span>Filter Projects By:</span></h2>
 
     <!-- MAP FILTERS -->
-    <p>
-        Municipality: 
-        <select class="mapfilter" id="municipalities">
-          <option value="">-- Show all --</option>
-        </select>
-    </p>
-    <p>
-        Goal: 
-        <select class="mapfilter" id="goals">
-          <option value="">-- Show all --</option>
-        </select>
-    </p>
-    <p>
-        Supergoal: 
-        <select class="mapfilter" id="supergoals">
-          <option value="">-- Show all --</option>
-        </select>
-    </p>
-    <p>
-        Strategy: 
-        <select class="mapfilter" id="strategies">
-          <option value="">-- Show all --</option>
-        </select>
-    </p>
+    <div class="filterlabel"><label>Municipality:</label></div>
+    <select class="mapfilter" id="municipalities">
+      <option value="">-- Show all --</option>
+    </select>
+
+    <div class="filterlabel"><label>Goal:</label></div>
+    <select class="mapfilter" id="goals">
+      <option value="">-- Show all --</option>
+    </select>
+
+    <div class="filterlabel"><label>Supergoal:</label></div>
+    <select class="mapfilter" id="supergoals">
+      <option value="">-- Show all --</option>
+    </select>
+
+    <div class="filterlabel"><label>Strategy:</label></div>
+    <select class="mapfilter" id="strategies">
+      <option value="">-- Show all --</option>
+    </select>
+
     <p>
       <button id="filter-btn">Apply Filter</button>
     </p>
