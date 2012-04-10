@@ -1,4 +1,4 @@
-from iamap.models import Project, Subregion, CommunityType, Strategy, Goal, Supergoal, Municipality
+from iamap.models import Project, Subregion, CommunityType, Strategy, Goal, Supergoal, Municipality, Department, Funding
 from django.contrib.gis import admin
 # from django.contrib.gis import admin
 
@@ -16,7 +16,7 @@ class ProjectAdmin(admin.ModelAdmin):
         ('Other project properties',
             {'fields': ['timing', 'status', 'equity', ]}),
     ]    
-    list_filter = ['goals', 'supergoals', 'strategies', ]
+    list_filter = ['supergoals', 'goals', 'strategies', ]
     list_display = ('pk', 'name', )
     search_fields = ['name', 'desc']
     ordering = ['id']
@@ -53,6 +53,14 @@ class SubregionAdmin(admin.ModelAdmin):
     list_display = ('pk', 'abbr', 'name', )
     list_editable = ('abbr', 'name', )
 
+class FundingAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'name', )
+    list_editable = ('name', )
+
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'name', )
+    list_editable = ('name', )
+
 
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Subregion, SubregionAdmin)
@@ -61,3 +69,5 @@ admin.site.register(Strategy, StrategyAdmin)
 admin.site.register(Goal, GoalAdmin)
 admin.site.register(Supergoal, SupergoalAdmin)
 admin.site.register(Municipality, MunicipalityAdmin)
+admin.site.register(Funding, FundingAdmin)
+admin.site.register(Department, DepartmentAdmin)

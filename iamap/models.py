@@ -24,22 +24,6 @@ MUNICIPALITY_TYPE = (
 )
 
 
-class Municipality(models.Model):
-    """ Municipalities """
-    muni_id = models.IntegerField('Muni ID', primary_key=True)
-    name = models.CharField(max_length=50)
-    geometry = models.MultiPolygonField(geography=True)
-    objects = models.GeoManager()
-    
-    def __unicode__(self):
-        return self.name
-    
-    class Meta:
-        verbose_name = _('Municipality')
-        verbose_name_plural = _('Municipalities')
-        ordering = ['name']
-
-
 class Department(models.Model):
     """
     MAPC Departments or Divisions. Only one hierarchy used for simplicity reasons.
@@ -101,7 +85,7 @@ class Strategy(models.Model):
         ordering = ['title']
 
     def __unicode__(self):
-        return self.nr
+        return self.title or self.nr
     
 
 class Supergoal(models.Model):
@@ -134,7 +118,7 @@ class Goal(models.Model):
         ordering = ['title']
 
     def __unicode__(self):
-        return self.title
+        return self.title or self.nr
 
 
 class Project(models.Model):
