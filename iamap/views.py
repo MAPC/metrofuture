@@ -25,28 +25,29 @@ def get_filters(request):
 
     for municipality in municipalities:
         response['municipalities'].append(dict(
-            id=municipality.muni_id,
-            name=municipality.name, 
+            id = municipality.muni_id,
+            name = municipality.name, 
         ))
     for strategy in strategies:
         response['strategies'].append(dict(
-            id=strategy.id,
-            name="%s %s" % (strategy.nr, strategy.title),
+            id = strategy.id,
+            name = strategy.title or 'n/a',
         ))
     for goal in goals:
         response['goals'].append(dict(
-            id=goal.id,
-            name="%s %s" % (goal.nr, goal.title),
+            id = goal.id,
+            name = goal.title or 'n/a',
+            supergoal = goal.supergoal.id,
         ))
     for supergoal in supergoals:
         response['supergoals'].append(dict(
-            id=supergoal.id,
-            name=supergoal.title,   
+            id = supergoal.id,
+            name = supergoal.title,   
         ))
     for k,v in PROJECT_STATUS:
         response['status'].append(dict(
-            id=k,
-            name=v,
+            id = k,
+            name = v,
         ))
 
     return HttpResponse(simplejson.dumps(response), mimetype='application/json')

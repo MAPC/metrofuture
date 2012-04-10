@@ -33,8 +33,8 @@ class CommunityTypeAdmin(admin.ModelAdmin):
 
 
 class GoalAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'nr', 'title', )
-    list_editable = ('nr', 'title', )
+    list_display = ('pk', 'nr', 'title', 'supergoal')
+    list_editable = ('nr', 'title', 'supergoal')
     ordering = ['id']
 
 

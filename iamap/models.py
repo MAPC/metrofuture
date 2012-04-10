@@ -10,160 +10,165 @@ except ImportError:
 
 # Project choices
 PROJECT_STATUS = (
-	('con', 'Continuing'),
-	('com', 'Completed'),
-	('new', 'New'),
-	('imp', 'Implementation'),
-	('inp', 'In Progress'),
+    ('con', 'Continuing'),
+    ('com', 'Completed'),
+    ('new', 'New'),
+    ('imp', 'Implementation'),
+    ('inp', 'In Progress'),
 )
 
 MUNICIPALITY_TYPE = (
-	('m', 'Multiple'),
-	('s', 'Single'),
-	('r', 'Regional'),
+    ('m', 'Multiple'),
+    ('s', 'Single'),
+    ('r', 'Regional'),
 )
 
 
 class Municipality(models.Model):
-	""" Municipalities """
-	muni_id = models.IntegerField('Muni ID', primary_key=True)
-	name = models.CharField(max_length=50)
-	geometry = models.MultiPolygonField(geography=True)
-	objects = models.GeoManager()
+    """ Municipalities """
+    muni_id = models.IntegerField('Muni ID', primary_key=True)
+    name = models.CharField(max_length=50)
+    geometry = models.MultiPolygonField(geography=True)
+    objects = models.GeoManager()
     
-	def __unicode__(self):
-		return self.name
+    def __unicode__(self):
+        return self.name
     
-	class Meta:
-		verbose_name = _('Municipality')
-		verbose_name_plural = _('Municipalities')
-		ordering = ['name']
+    class Meta:
+        verbose_name = _('Municipality')
+        verbose_name_plural = _('Municipalities')
+        ordering = ['name']
 
 
 class Department(models.Model):
-	"""
-	MAPC Departments or Divisions. Only one hierarchy used for simplicity reasons.
-	"""
-	name = models.CharField(max_length=50)
+    """
+    MAPC Departments or Divisions. Only one hierarchy used for simplicity reasons.
+    """
+    name = models.CharField(max_length=50)
 
-	def __unicode__(self):
-		return self.name
+    def __unicode__(self):
+        return self.name
 
 class Funding(models.Model):
-	"""
-	Funding sources
-	"""
-	name = models.CharField(max_length=50)
+    """
+    Funding sources
+    """
+    name = models.CharField(max_length=50)
 
-	def __unicode__(self):
-		return self.name
+    def __unicode__(self):
+        return self.name
 
 class Municipality(models.Model):
-	""" Municipalities """
-	muni_id = models.IntegerField('Muni ID', primary_key=True)
-	name = models.CharField(max_length=50)
-	geometry = models.MultiPolygonField(geography=True)
-	objects = models.GeoManager()
+    """ Municipalities """
+    muni_id = models.IntegerField('Muni ID', primary_key=True)
+    name = models.CharField(max_length=50)
+    geometry = models.MultiPolygonField(geography=True)
+    objects = models.GeoManager()
     
-	def __unicode__(self):
-		return self.name
+    def __unicode__(self):
+        return self.name
     
-	class Meta:
-		verbose_name = _('Municipality')
-		verbose_name_plural = _('Municipalities')
-		ordering = ['name']
+    class Meta:
+        verbose_name = _('Municipality')
+        verbose_name_plural = _('Municipalities')
+        ordering = ['name']
 
 class CommunityType(models.Model):
-	abbr = models.CharField(max_length=10)
-	name = models.CharField(max_length=50, blank=True, null=True)
+    abbr = models.CharField(max_length=10)
+    name = models.CharField(max_length=50, blank=True, null=True)
 
-	def __unicode__(self):
-		return self.abbr
+    def __unicode__(self):
+        return self.abbr
 
 class Subregion(models.Model):
-	abbr = models.CharField(max_length=10)
-	name = models.CharField(max_length=50, blank=True, null=True)
+    abbr = models.CharField(max_length=10)
+    name = models.CharField(max_length=50, blank=True, null=True)
 
-	def __unicode__(self):
-		return self.abbr
-	
+    def __unicode__(self):
+        return self.abbr
+    
 
 class Strategy(models.Model):
-	"""
-	MetroFuture Strategies
-	"""
-	nr = models.CharField(max_length=5)
-	title = models.CharField(max_length=100, blank=True, null=True)
+    """
+    MetroFuture Strategies
+    """
+    nr = models.CharField(max_length=5)
+    title = models.CharField(max_length=100, blank=True, null=True)
 
-	class Meta:
-		verbose_name = _('Strategy')
-		verbose_name_plural = _('Strategies')
+    class Meta:
+        verbose_name = _('Strategy')
+        verbose_name_plural = _('Strategies')
+        ordering = ['title']
 
-	def __unicode__(self):
-		return self.nr
+    def __unicode__(self):
+        return self.nr
     
-class Goal(models.Model):
-	"""
-	MetroFuture Goals
-	"""
-	nr = models.CharField(max_length=5)
-	title = models.CharField(max_length=100, blank=True, null=True)
-		
-	class Meta:
-		verbose_name = _('Goal')
-		verbose_name_plural = _('Goals')
-
-	def __unicode__(self):
-		return self.nr
 
 class Supergoal(models.Model):
-	"""
-	MetroFuture Supergoals
-	"""
-	abbr = models.CharField(max_length=2)
-	title = models.CharField(max_length=100, blank=True, null=True)
+    """
+    MetroFuture Supergoals
+    """
+    abbr = models.CharField(max_length=2)
+    title = models.CharField(max_length=100, blank=True, null=True)
 
-	class Meta:
-		verbose_name = _('Supergoal')
-		verbose_name_plural = _('Supergoals')
-		ordering = ['title']
+    class Meta:
+        verbose_name = _('Supergoal')
+        verbose_name_plural = _('Supergoals')
+        ordering = ['title']
 
-	def __unicode__(self):
-		return self.title
+    def __unicode__(self):
+        return self.title
+
+
+class Goal(models.Model):
+    """
+    MetroFuture Goals
+    """
+    nr = models.CharField(max_length=5)
+    title = models.CharField(max_length=100, blank=True, null=True)
+    supergoal = models.ForeignKey(Supergoal)
+        
+    class Meta:
+        verbose_name = _('Goal')
+        verbose_name_plural = _('Goals')
+        ordering = ['title']
+
+    def __unicode__(self):
+        return self.title
 
 
 class Project(models.Model):
-	"""
-	MetroFuture projects; core class for map
-	"""
-	name = models.CharField(max_length=250)
-	desc = models.TextField('Short description', blank=True, null=True)
-	url = models.URLField('Project URL', blank=True, null=True)
-	thumbnail = models.ImageField('Project picture', help_text='Image dimensions should be 160x120', upload_to='project_tn', blank=True, null=True)
-	lead_dept = models.ForeignKey(Department, related_name='lead')
-	collab_dept = models.ManyToManyField(Department, related_name='collab', blank=True, null=True)
-	collab_ext = models.CharField('External Collaborator', max_length=50, blank=True, null=True)
-	client = models.CharField(max_length=100, blank=True, null=True)
-	funding = models.ForeignKey('Funding', blank=True, null=True)
-	timing = models.CharField(max_length=50, blank=True, null=True)
-	status = models.CharField(max_length=3, choices=PROJECT_STATUS)
-	municipalities = models.ManyToManyField(Municipality, blank=True, null=True, related_name='projects')
-	municipalities_type = models.CharField(max_length=1, choices=MUNICIPALITY_TYPE)
-	municipal_specific = models.BooleanField(help_text='Counted as a project in a specific municipality')
-	equity = models.BooleanField('Equity related')
-	community_types = models.ManyToManyField(CommunityType, blank=True, null=True)
-	subregions = models.ManyToManyField(Subregion, blank=True, null=True)	
+    """
+    MetroFuture projects; core class for map
+    """
+    name = models.CharField(max_length=250)
+    desc = models.TextField('Short description', blank=True, null=True)
+    url = models.URLField('Project URL', blank=True, null=True)
+    thumbnail = models.ImageField('Project picture', help_text='Image dimensions should be 160x120', upload_to='project_tn', blank=True, null=True)
+    lead_dept = models.ForeignKey(Department, related_name='lead')
+    collab_dept = models.ManyToManyField(Department, related_name='collab', blank=True, null=True)
+    collab_ext = models.CharField('External Collaborator', max_length=50, blank=True, null=True)
+    client = models.CharField(max_length=100, blank=True, null=True)
+    funding = models.ForeignKey('Funding', blank=True, null=True)
+    timing = models.CharField(max_length=50, blank=True, null=True)
+    status = models.CharField(max_length=3, choices=PROJECT_STATUS)
+    municipalities = models.ManyToManyField(Municipality, blank=True, null=True, related_name='projects')
+    municipalities_type = models.CharField(max_length=1, choices=MUNICIPALITY_TYPE)
+    municipal_specific = models.BooleanField(help_text='Counted as a project in a specific municipality')
+    equity = models.BooleanField('Equity related')
+    community_types = models.ManyToManyField(CommunityType, blank=True, null=True)
+    subregions = models.ManyToManyField(Subregion, blank=True, null=True)   
 
-	strategies = models.ManyToManyField(Strategy, blank=True, null=True)
-	goals = models.ManyToManyField(Goal, blank=True, null=True)
-	supergoals = models.ManyToManyField(Supergoal, blank=True, null=True)
+    strategies = models.ManyToManyField(Strategy, blank=True, null=True)
+    goals = models.ManyToManyField(Goal, blank=True, null=True)
+    supergoals = models.ManyToManyField(Supergoal, blank=True, null=True)
 
-	active = models.BooleanField('Shown on map', help_text='Not yet implemented.')
+    active = models.BooleanField('Shown on map', help_text='Not yet implemented.')
 
-	def __unicode__(self):
-		return self.name
+    def __unicode__(self):
+        return self.name
 
-	class Meta:
-		ordering = ['name']    
+    class Meta:
+        ordering = ['name']    
     
     

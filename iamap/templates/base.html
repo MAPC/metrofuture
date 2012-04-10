@@ -167,13 +167,13 @@ margin-right: 20px;
       <option value="">-- Show all --</option>
     </select>
 
-    <div class="filterlabel"><label>Goal:</label></div>
-    <select class="mapfilter" id="goals">
+    <div class="filterlabel"><label>Supergoal:</label></div>
+    <select class="mapfilter" id="supergoals">
       <option value="">-- Show all --</option>
     </select>
 
-    <div class="filterlabel"><label>Supergoal:</label></div>
-    <select class="mapfilter" id="supergoals">
+    <div class="filterlabel"><label>Goal:</label></div>
+    <select class="mapfilter" id="goals">
       <option value="">-- Show all --</option>
     </select>
 
@@ -200,6 +200,10 @@ margin-right: 20px;
   <h2 id="title">MetroFuture In Action Map</h2>
 <div class="content">
 <div id="map">MetroFuture In Action Map</div>
+
+<div id="filter-help">
+  <p>Please use project filter options to narrow your search.</p>
+</div>
 
 
 <div id="project-detail"></div>
@@ -240,10 +244,13 @@ pageTracker._trackPageview();
 
 $(document).ready(function() {
 
-  var baseUrl = "http://localhost:8000";
+  var baseUrl = "http://localhost:8000", 
+      filter = { "format": "json" },
+      goals = {};
 
-
-  // utils
+  /* 
+   * utils 
+   */
 
   // AJAX spinner
   $.spinner = {
@@ -253,12 +260,6 @@ $(document).ready(function() {
     hide : function () {
       $("#title").css("background", "");
     }
-  }
-
-  // eliminate linebreaks in retrieved json
-  $.removeLnBr = function(txt) {
-    var parsedTxt = str_replace(chr(10), "", txt);
-    return str.replace(chr(13), "", parsedTxt);
   }
 
   // show municipalities with project list in popup
@@ -308,7 +309,9 @@ $(document).ready(function() {
     });
   }
 
-  // page
+  /* 
+   * page
+   */
 
   $.spinner.show();
 
@@ -338,11 +341,6 @@ $(document).ready(function() {
       });
   });
   map.addLayer(municipalityLayer);
-  $.getJSON(baseUrl + "/api/v1/municipalities/", 
-    {"format": "json"},
-    function (data) {
-      $.renderMunicipalities(data.objects, municipalityLayer);
-  });
 
 
   // project layer and details
@@ -361,23 +359,28 @@ $(document).ready(function() {
   map.addLayer(projectLayer);
 
 
-  // build filter options
+  // init: build filter options
   $.getJSON(baseUrl + "/filters/",
     function (filters) {
+      // extract goals filter
+      goals = filters["goals"];
       $.each(filters, function (filterKey, filter) {
         $.each(filter, function (optionKey, option) {
           $("<option value='" + option.id + "'>" + option.name + "</option>").appendTo(".mapfilter #" + filterKey);
         });
         $(".mapfilter #" + filterKey).val("");
       }); 
-      $.spinner.hide();       
+      // load municipalities
+      $.getJSON(baseUrl + "/api/v1/municipalities/", 
+        {"format": "json"},
+        function (data) {
+          $.renderMunicipalities(data.objects, municipalityLayer);
+          $.spinner.hide();
+      });       
   });
 
 
   // filter projects
-  var filter = {
-    "format": "json"
-  }
   $(".mapfilter").change(function() {   
     var selectedFilter = $("option:selected", this);     
     // build query
@@ -388,6 +391,25 @@ $(document).ready(function() {
       delete filter[filterProperty];
     } else {
       filter[filterProperty] = filterValue;
+    }
+
+    // adjust goals filter to selected supergoal
+    if (filterProperty === "supergoals") {
+      if (filterValue >= 1) {  
+        // clear options
+        $(".mapfilter #goals").children().remove();
+        $("<option value=''>-- Show all --</option>").appendTo(".mapfilter #goals");
+        // iterate through goal filter and attache all supergoal = supergoal items to selector
+        $.each(goals, function (key, goal) {
+          if (goal["supergoal"] === parseInt(filterValue)) {
+            $("<option value='" + goal["id"] + "'>" + goal["name"] + "</option>").appendTo(".mapfilter #goals");
+          }
+        });
+        $(".mapfilter #goals").val("");
+      } else if (filterValue === "") {
+        // clear goal filter
+        if (filter["goals"]) delete filter["goals"];
+      }
     }
   });
   // execute filter
@@ -409,6 +431,7 @@ $(document).ready(function() {
         function (data) {
           $.renderMunicipalities(data.objects, municipalityLayer);
           $.spinner.hide();
+          $("#filter-help").show();
       });
     } else {
       // query projects with filter
@@ -421,7 +444,7 @@ $(document).ready(function() {
         if (resultCount > 0) {
           var projectNoun = (resultCount === 1) ? "Project" : "Projects";
           $("<h2 class='searchresult'>" + resultCount + " " + projectNoun + " found:</h2>").appendTo("#project-detail");
-          // project list
+          // project list FIXME: copy of line 300
           $.each(resultProjects, function (key, project) {
             if (project.url !== "") project.name = "<a href='" + project.url + "' target='_blank'>" + project.name + "</a>";
             $("<h3>" + project.name + "</h3>").appendTo("#project-detail");
@@ -448,10 +471,12 @@ $(document).ready(function() {
               var municipalities = (muniId === "") ? data.objects : [data];
               $.renderMunicipalities(municipalities, municipalityLayer);
               $.spinner.hide();
+              $("#filter-help").hide();
           });
         } else {
           $("<h2 class='searchresult'>No Projects found.</h2>").appendTo("#project-detail");
           $.spinner.hide();
+          $("#filter-help").hide();
         }
         
       });
