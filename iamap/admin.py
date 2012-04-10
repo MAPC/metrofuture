@@ -6,18 +6,19 @@ from django.contrib.gis import admin
 class ProjectAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, 
-            {'fields': ['name', 'desc', 'url', 'thumbnail', ]}),
+            {'fields': ['name', 'desc', 'url', 'thumbnail', 'active', ]}),
         ('MetroFuture', 
             {'fields': ['strategies', 'goals', 'supergoals', ]}),
         ('Collaborations', 
             {'fields': ['lead_dept', 'collab_dept', 'collab_ext', 'client', 'funding', ]}),
         ('Regional properties',
-            {'fields': ['municipalities_type', 'municipal_specific', 'community_types', 'municipalities', 'subregions', 'active', ]}),
+            {'fields': ['municipalities_type', 'municipal_specific', 'community_types', 'municipalities', 'subregions', ]}),
         ('Other project properties',
             {'fields': ['timing', 'status', 'equity', ]}),
     ]    
     list_filter = ['supergoals', 'goals', 'strategies', ]
-    list_display = ('pk', 'name', )
+    list_display = ('pk', 'name', 'active', 'status', )
+    list_editable = ('name', 'active', 'status', )
     search_fields = ['name', 'desc']
     ordering = ['id']
 

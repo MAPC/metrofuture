@@ -269,11 +269,11 @@ $(document).ready(function() {
         "type": "Feature",
         "geometry": municipality.geometry,
         "properties": {
-          "popupContent": "<b>" + municipality.name + "</b><ul>"
+          "popupContent": "<b>All projects in " + municipality.name + ":</b><ul>"
         }
       }
-      $.each(municipality.projects, function (key, project) {
-        feature["properties"]["popupContent"] += "<li><a class='project_uri' onclick='$.showProject("+ project.id +")' href='javascript:void(0)'>" + project.name + "</a></li>";
+      $.each(municipality.projects, function (key, project) { 
+        if (project.active === true) feature["properties"]["popupContent"] += "<li><a class='project_uri' onclick='$.showProject("+ project.id +")' href='javascript:void(0)'>" + project.name + "</a></li>";
       });
       feature["properties"]["popupContent"] += "</ul>";
       layer.addGeoJSON(feature);
@@ -306,6 +306,7 @@ $(document).ready(function() {
           if (project.desc !== "") $("<p>" + project.desc.replace(/\r\n/g, "<br />").replace(/\n/g, "<br/>") + "</p>").appendTo("#project-detail");
         });
         $.spinner.hide();
+        $("#filter-help").hide();
     });
   }
 

@@ -147,7 +147,7 @@ class Project(models.Model):
     goals = models.ManyToManyField(Goal, blank=True, null=True)
     supergoals = models.ManyToManyField(Supergoal, blank=True, null=True)
 
-    active = models.BooleanField('Shown on map', help_text='Not yet implemented.')
+    active = models.BooleanField('Shown on map')
 
     def __unicode__(self):
         return self.name

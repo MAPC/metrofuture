@@ -7,12 +7,13 @@ from iamap.tastyhacks import GeoResource
 class MunicipalityGeoResource(GeoResource):
     """
     GeoJSON enabled municipality result.
+    FIXME: projects should be filtered by active=True
     """
 
     projects = fields.ToManyField('iamap.api.ProjectResource', 'projects', full=True)
 
     class Meta:
-        queryset = Municipality.objects.filter(projects__isnull=False).distinct()
+        queryset = Municipality.objects.filter(projects__active=True).distinct()
         resource_name = 'municipalities'
         allowed_methods = ['get',]
         limit = 200
@@ -28,7 +29,7 @@ class MunicipalityResource(ModelResource):
     Municipality short-info without geometry as property in Project Muni List.
     """
     class Meta:
-        queryset = Municipality.objects.filter(projects__isnull=False).distinct()
+        queryset = Municipality.objects.filter(projects__active=True).distinct()
         allowed_methods = ['get',]
         excludes = ['geometry',]
         limit = 200
@@ -79,9 +80,9 @@ class ProjectMuniResource(ModelResource):
     supergoals = fields.ToManyField(SupergoalResource, 'supergoals', full=True)
 
     class Meta:
-        queryset = Project.objects.all().distinct()
+        queryset = Project.objects.filter(active=True).distinct()
         resource_name = 'projects'
-        fields = ['id', 'name', 'url', 'desc', 'thumbnail']
+        fields = ['id', 'name', 'url', 'desc', 'thumbnail', ]
         limit = 200
         allowed_methods = ['get']
         filtering = {
@@ -103,8 +104,8 @@ class ProjectResource(ModelResource):
     supergoals = fields.ToManyField(SupergoalResource, 'supergoals', full=True)
 
     class Meta:
-        queryset = Project.objects.all()
-        fields = ['name', 'id', 'status',]
+        queryset = Project.objects.filter(active=True)
+        fields = ['name', 'id', 'status', 'active', ]
         limit = 200
         allowed_methods = ['get']
         filtering = {
