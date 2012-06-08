@@ -13,8 +13,6 @@ PROJECT_STATUS = (
     ('con', 'Continuing'),
     ('com', 'Completed'),
     ('new', 'New'),
-    ('imp', 'Implementation'),
-    ('inp', 'In Progress'),
 )
 
 MUNICIPALITY_TYPE = (
