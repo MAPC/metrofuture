@@ -34,9 +34,9 @@ class CommunityTypeAdmin(admin.ModelAdmin):
 
 
 class GoalAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'nr', 'title', 'supergoal')
-    list_editable = ('nr', 'title', 'supergoal')
-    ordering = ['id']
+    list_display = ('nr', 'title', 'supergoal')
+    list_editable = ('title', 'supergoal')
+    ordering = ['nr']
 
 
 class SupergoalAdmin(admin.ModelAdmin):
@@ -47,7 +47,7 @@ class SupergoalAdmin(admin.ModelAdmin):
 class StrategyAdmin(admin.ModelAdmin):
     list_display = ('pk', 'nr', 'title', )
     list_editable = ('nr', 'title', )
-    ordering = ['id']
+    ordering = ['nr_int', 'nr_char']
 
 
 class SubregionAdmin(admin.ModelAdmin):

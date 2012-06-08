@@ -31,11 +31,11 @@ def get_filters(request):
     for strategy in strategies:
         response['strategies'].append(dict(
             id = strategy.id,
-            name = strategy.title or 'n/a',
+            name = strategy.title or strategy.nr or 'n/a',
         ))
     for goal in goals:
         response['goals'].append(dict(
-            id = goal.id,
+            id = goal.nr,
             name = goal.title or 'n/a',
             supergoal = goal.supergoal.id,
         ))

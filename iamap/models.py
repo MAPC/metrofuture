@@ -74,16 +74,26 @@ class Strategy(models.Model):
     """
     MetroFuture Strategies
     """
-    nr = models.CharField(max_length=5)
+    nr = models.CharField('Number', max_length=5)
     title = models.CharField(max_length=100, blank=True, null=True)
+
+    # internal, for better sorting
+    nr_int = models.IntegerField(blank=True, null=True)
+    nr_char = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         verbose_name = _('Strategy')
         verbose_name_plural = _('Strategies')
-        ordering = ['title']
+        ordering = ['nr_int', 'nr_char']
 
     def __unicode__(self):
         return self.title or self.nr
+
+    def save(self, *args, **kwargs):
+        nr = self.nr.split('.')
+        self.nr_int = int(nr[0])
+        self.nr_char = nr[1]
+        super(Strategy, self).save(*args, **kwargs)
     
 
 class Supergoal(models.Model):
@@ -96,7 +106,7 @@ class Supergoal(models.Model):
     class Meta:
         verbose_name = _('Supergoal')
         verbose_name_plural = _('Supergoals')
-        ordering = ['title']
+        ordering = ['id']
 
     def __unicode__(self):
         return self.title
@@ -106,14 +116,14 @@ class Goal(models.Model):
     """
     MetroFuture Goals
     """
-    nr = models.CharField(max_length=5)
+    nr = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=100, blank=True, null=True)
     supergoal = models.ForeignKey(Supergoal)
         
     class Meta:
         verbose_name = _('Goal')
         verbose_name_plural = _('Goals')
-        ordering = ['title']
+        ordering = ['nr']
 
     def __unicode__(self):
         return self.title or self.nr
