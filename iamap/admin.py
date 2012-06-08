@@ -2,8 +2,9 @@ from iamap.models import Project, Subregion, CommunityType, Strategy, Goal, Supe
 from django.contrib.gis import admin
 # from django.contrib.gis import admin
 
+import reversion
 
-class ProjectAdmin(admin.ModelAdmin):
+class ProjectAdmin(reversion.VersionAdmin):
     fieldsets = [
         (None, 
             {'fields': ['name', 'desc', 'url', 'thumbnail', 'active', ]}),
@@ -54,11 +55,11 @@ class SubregionAdmin(admin.ModelAdmin):
     list_display = ('pk', 'abbr', 'name', )
     list_editable = ('abbr', 'name', )
 
-class FundingAdmin(admin.ModelAdmin):
+class FundingAdmin(reversion.VersionAdmin):
     list_display = ('pk', 'name', )
     list_editable = ('name', )
 
-class DepartmentAdmin(admin.ModelAdmin):
+class DepartmentAdmin(reversion.VersionAdmin):
     list_display = ('pk', 'name', )
     list_editable = ('name', )
 

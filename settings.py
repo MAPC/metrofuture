@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'south',
     'iamap',
     'tastypie',
+    'reversion',
 )
 
 # A sample logging configuration. The only tangible logging
