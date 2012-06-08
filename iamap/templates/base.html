@@ -403,21 +403,25 @@ $(document).ready(function() {
 
     // adjust goals filter to selected supergoal
     if (filterProperty === "supergoals") {
+      // clear options
+      $(".mapfilter #goals").children().remove();
+      $("<option value=''>-- Show all --</option>").appendTo(".mapfilter #goals");
       if (filterValue >= 1) {  
-        // clear options
-        $(".mapfilter #goals").children().remove();
-        $("<option value=''>-- Show all --</option>").appendTo(".mapfilter #goals");
         // iterate through goal filter and attache all supergoal = supergoal items to selector
         $.each(goals, function (key, goal) {
           if (goal["supergoal"] === parseInt(filterValue)) {
             $("<option value='" + goal["id"] + "'>" + goal["name"] + "</option>").appendTo(".mapfilter #goals");
           }
         });
-        $(".mapfilter #goals").val("");
       } else if (filterValue === "") {
         // clear goal filter
         if (filter["goals"]) delete filter["goals"];
+        // rebuild goal dropdown with entire list
+        $.each(goals, function (key, goal) {
+          $("<option value='" + goal["id"] + "'>" + goal["name"] + "</option>").appendTo(".mapfilter #goals");
+        });
       }
+      $(".mapfilter #goals").val("");
     }
   });
   // text filter
@@ -461,7 +465,7 @@ $(document).ready(function() {
         if (resultCount > 0) {
           var projectNoun = (resultCount === 1) ? "Project" : "Projects";
           $("<h2 class='searchresult'>" + resultCount + " " + projectNoun + " found:</h2>").appendTo("#project-detail");
-          // project list FIXME: copy of line 300
+          // project list TODO: copy of line 300, not ideal...
           $.each(resultProjects, function (key, project) {
             if (project.url !== "") project.name = "<a href='" + project.url + "' target='_blank'>" + project.name + "</a>";
             $("<h3>" + project.name + "</h3>").appendTo("#project-detail");
