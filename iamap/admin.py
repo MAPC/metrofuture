@@ -48,6 +48,7 @@ class SupergoalAdmin(admin.ModelAdmin):
 class StrategyAdmin(admin.ModelAdmin):
     list_display = ('pk', 'nr', 'title', )
     list_editable = ('nr', 'title', )
+    exclude = ('nr_int', 'nr_char')
     ordering = ['nr_int', 'nr_char']
 
 
