@@ -17,7 +17,7 @@ class ProjectAdmin(reversion.VersionAdmin):
         ('Other project properties',
             {'fields': ['timing', 'status', 'equity', ]}),
     ]    
-    list_filter = ['supergoals', 'goals', 'strategies', ]
+    list_filter = ['supergoals', 'goals', 'strategies', 'lead_dept']
     list_display = ('pk', 'name', 'active', 'status', )
     list_editable = ('name', 'active', 'status', )
     search_fields = ['name', 'desc']

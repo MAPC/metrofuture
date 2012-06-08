@@ -137,7 +137,7 @@ class Project(models.Model):
     desc = models.TextField('Short description', blank=True, null=True)
     url = models.URLField('Project URL', blank=True, null=True)
     thumbnail = models.ImageField('Project picture', help_text='Image dimensions should be 160x120', upload_to='project_tn', blank=True, null=True)
-    lead_dept = models.ForeignKey(Department, related_name='lead')
+    lead_dept = models.ForeignKey(Department, related_name='lead', verbose_name=u'Lead Department')
     collab_dept = models.ManyToManyField(Department, related_name='collab', blank=True, null=True)
     collab_ext = models.CharField('External Collaborator', max_length=50, blank=True, null=True)
     client = models.CharField(max_length=100, blank=True, null=True)
