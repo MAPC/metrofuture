@@ -163,6 +163,10 @@ margin-right: 20px;
     <h2 class="title"><span>Filter Projects By:</span></h2>
 
     <!-- MAP FILTERS -->
+
+    <div class="filterlabel"><label>Name:</label></div>
+    <input class="mapfilter" type="text" id="name">
+
     <div class="filterlabel"><label>Municipality:</label></div>
     <select class="mapfilter" id="municipalities">
       <option value="">-- Show all --</option>
@@ -189,7 +193,7 @@ margin-right: 20px;
     </select>
 
     <p>
-      <button id="filter-btn">Apply Filter</button>
+      <button id="filter-btn">Search</button>
     </p>
 </div>
 </div>
@@ -385,7 +389,7 @@ $(document).ready(function() {
 
 
   // filter projects
-  $(".mapfilter").change(function() {   
+  $("select.mapfilter").change(function() {   
     var selectedFilter = $("option:selected", this);     
     // build query
     var filterProperty = selectedFilter.parent().attr("id");
@@ -416,6 +420,15 @@ $(document).ready(function() {
       }
     }
   });
+  // text filter
+  $("input.mapfilter").bind("change", function() {
+    if ($(this).val() !== "") {
+      filter["name__icontains"] = $(this).val();
+    } else {
+      if (filter["name__icontains"]) delete filter["name__icontains"];
+    }
+  });
+
   // execute filter
   $("#filter-btn").bind("click", function () {
     $.spinner.show();
