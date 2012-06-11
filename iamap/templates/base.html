@@ -283,7 +283,8 @@ $(document).ready(function() {
       feature["properties"]["popupContent"] += "</ul>";
       layer.addGeoJSON(feature);
     });
-    // TODO: zoom to layer bounds
+    // zoom to layer bounds
+    map.fitBounds(layer.getBounds());
   }
 
   // called from municipal popup link
@@ -327,9 +328,6 @@ $(document).ready(function() {
     minZoom: 9
   });
 
-  // var basemapUrl = 'http://{s}.tile.cloudmade.com/a16f47619b8943b394e9da2009f89bfa/22677/256/{z}/{x}/{y}.png',
-  //   basemapAttrib = 'Map data &copy; 2012 OpenStreetMap contributors, Imagery &copy; 2012 CloudMade',
-  //   basemap = new L.TileLayer(basemapUrl, {maxZoom: 18, attribution: basemapAttrib});
   var basemap = new L.MAPCTileLayer("basemap");
 
   var boston = new L.LatLng(42.357778, -71.061667); // geographical point (longitude and latitude)
