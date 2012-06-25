@@ -124,6 +124,7 @@ INSTALLED_APPS = (
     'django.contrib.gis',
     'south',
     'iamap',
+    'account',
     'tastypie',
     'reversion',
 )
@@ -150,6 +151,9 @@ LOGGING = {
         },
     }
 }
+
+# custom user profile
+AUTH_PROFILE_MODULE = 'account.UserProfile'
 
 # import local settings
 try:
