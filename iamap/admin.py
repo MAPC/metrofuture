@@ -1,6 +1,5 @@
 from iamap.models import Project, Subregion, CommunityType, Strategy, Goal, Supergoal, Municipality, Department, Funding
 from django.contrib.gis import admin
-# from django.contrib.gis import admin
 
 import reversion
 
@@ -22,6 +21,18 @@ class ProjectAdmin(reversion.VersionAdmin):
     list_editable = ('name', 'active', 'status', )
     search_fields = ['name', 'desc']
     ordering = ['id']
+
+
+    def changelist_view(self, request, extra_context=None):
+
+        # requires the "MetroFuture Admin" group
+        if not request.GET.has_key('lead_dept__id__in') and not 'MetroFuture Admin' in  request.user.groups.values_list('name', flat=True):
+
+            q = request.GET.copy()
+            q['lead_dept__id__in'] = ','.join([str(dept.id) for dept in request.user.get_profile().department.all()])
+            request.GET = q
+            request.META['QUERY_STRING'] = request.GET.urlencode()
+        return super(ProjectAdmin,self).changelist_view(request, extra_context=extra_context)
 
 
 class MunicipalityAdmin(admin.OSMGeoAdmin):    
