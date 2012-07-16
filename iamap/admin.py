@@ -12,7 +12,7 @@ class ProjectAdmin(reversion.VersionAdmin):
         ('Collaborations', 
             {'fields': ['lead_dept', 'collab_dept', 'collab_ext', 'client', 'funding', ]}),
         ('Regional properties',
-            {'fields': ['municipalities_type', 'municipal_specific', 'community_types', 'municipalities', 'subregions', ]}),
+            {'fields': ['municipalities_type', 'municipal_specific', 'municipalities', ]}),
         ('Other project properties',
             {'fields': ['timing', 'status', 'equity', ]}),
     ]    
