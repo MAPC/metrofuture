@@ -31,6 +31,7 @@ class Department(models.Model):
     def __unicode__(self):
         return self.name
 
+
 class Funding(models.Model):
     """
     Funding sources
@@ -40,6 +41,7 @@ class Funding(models.Model):
     def __unicode__(self):
         return self.name
 
+
 class CommunityType(models.Model):
     abbr = models.CharField(max_length=10)
     name = models.CharField(max_length=50, blank=True, null=True)
@@ -47,12 +49,14 @@ class CommunityType(models.Model):
     def __unicode__(self):
         return self.name
 
+
 class Subregion(models.Model):
     abbr = models.CharField(max_length=10)
     name = models.CharField(max_length=50, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
+
 
 class Municipality(models.Model):
     """ Municipalities """
@@ -71,30 +75,43 @@ class Municipality(models.Model):
         verbose_name_plural = _('Municipalities')
         ordering = ['name']
 
+
 class Strategy(models.Model):
     """
     MetroFuture Strategies
     """
-    nr = models.CharField('Number', max_length=5)
+    nr = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=100, blank=True, null=True)
-
-    # internal, for better sorting
-    nr_int = models.IntegerField(blank=True, null=True)
-    nr_char = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
         verbose_name = _('Strategy')
         verbose_name_plural = _('Strategies')
-        ordering = ['nr_int', 'nr_char']
+        ordering = ['nr', ]
 
     def __unicode__(self):
-        return self.title or self.nr
+        return self.title
 
-    def save(self, *args, **kwargs):
-        nr = self.nr.split('.')
-        self.nr_int = int(nr[0])
-        self.nr_char = nr[1]
-        super(Strategy, self).save(*args, **kwargs)
+
+class SubStrategy(models.Model):
+    """
+    MetroFuture SubStrategies
+    """
+    title = models.CharField(max_length=100, blank=True, null=True)
+    strategy = models.ForeignKey(Strategy)
+    letter = models.CharField(max_length=1)
+
+    class Meta:
+        verbose_name = _('Sub-Strategy')
+        verbose_name_plural = _('Sub-Strategies')
+        ordering = ['strategy', 'letter']
+        unique_together = (('strategy', 'letter'),)
+
+    def __unicode__(self):
+        return self.title
+
+    @property
+    def nr(self):
+        return '%d.%s' % (self.strategy.nr, self.letter)
     
 
 class Supergoal(models.Model):
@@ -149,12 +166,15 @@ class Project(models.Model):
     municipalities_type = models.CharField(max_length=1, choices=MUNICIPALITY_TYPE)
     municipal_specific = models.BooleanField(help_text='Counted as a project in a specific municipality')
     equity = models.BooleanField('Equity related')
-    # TODO: moved to municipality
+    # FIXME: redundant moved to municipality
     community_types = models.ManyToManyField(CommunityType, blank=True, null=True)
     subregions = models.ManyToManyField(Subregion, blank=True, null=True)   
 
+    # FIXME: redundant
     strategies = models.ManyToManyField(Strategy, blank=True, null=True)
+    substrategies = models.ManyToManyField(SubStrategy, blank=True, null=True)
     goals = models.ManyToManyField(Goal, blank=True, null=True)
+    # FIXME: redundant
     supergoals = models.ManyToManyField(Supergoal, blank=True, null=True)
 
     active = models.BooleanField('Shown on map')

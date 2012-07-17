@@ -1,4 +1,4 @@
-from iamap.models import Project, Subregion, CommunityType, Strategy, Goal, Supergoal, Municipality, Department, Funding
+from iamap.models import Project, Subregion, CommunityType, Strategy, Goal, Supergoal, Municipality, Department, Funding, SubStrategy
 from django.contrib.gis import admin
 
 import reversion
@@ -8,7 +8,7 @@ class ProjectAdmin(reversion.VersionAdmin):
         (None, 
             {'fields': ['name', 'desc', 'url', 'thumbnail', 'active', ]}),
         ('MetroFuture', 
-            {'fields': ['strategies', 'goals', 'supergoals', ]}),
+            {'fields': ['strategies', 'substrategies', 'supergoals', 'goals',]}),
         ('Collaborations', 
             {'fields': ['lead_dept', 'collab_dept', 'collab_ext', 'client', 'funding', ]}),
         ('Regional properties',
@@ -57,10 +57,14 @@ class SupergoalAdmin(admin.ModelAdmin):
 
 
 class StrategyAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'nr', 'title', )
-    list_editable = ('nr', 'title', )
-    exclude = ('nr_int', 'nr_char')
-    ordering = ['nr_int', 'nr_char']
+    list_display = ('nr', 'title', )
+    list_editable = ('title', )
+
+
+class SubStrategyAdmin(admin.ModelAdmin):
+    list_display = ('nr', 'title', )
+    list_editable = ('title',)
+    ordering = ['strategy', 'letter', ]
 
 
 class SubregionAdmin(admin.ModelAdmin):
@@ -80,6 +84,7 @@ admin.site.register(Project, ProjectAdmin)
 admin.site.register(Subregion, SubregionAdmin)
 admin.site.register(CommunityType, CommunityTypeAdmin)
 admin.site.register(Strategy, StrategyAdmin)
+admin.site.register(SubStrategy, SubStrategyAdmin)
 admin.site.register(Goal, GoalAdmin)
 admin.site.register(Supergoal, SupergoalAdmin)
 admin.site.register(Municipality, MunicipalityAdmin)
