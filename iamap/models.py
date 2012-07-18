@@ -165,7 +165,10 @@ class Project(models.Model):
     municipalities = models.ManyToManyField(Municipality, blank=True, null=True, related_name='projects')
     municipalities_type = models.CharField(max_length=1, choices=MUNICIPALITY_TYPE)
     municipal_specific = models.BooleanField(help_text='Counted as a project in a specific municipality')
+
     equity = models.BooleanField('Equity related')
+    equity_comment = models.TextField(null=True, blank=True)
+
     # FIXME: redundant moved to municipality
     community_types = models.ManyToManyField(CommunityType, blank=True, null=True)
     subregions = models.ManyToManyField(Subregion, blank=True, null=True)   

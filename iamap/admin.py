@@ -14,7 +14,7 @@ class ProjectAdmin(reversion.VersionAdmin):
         ('Regional properties',
             {'fields': ['municipalities_type', 'municipal_specific', 'municipalities', ]}),
         ('Other project properties',
-            {'fields': ['timing', 'status', 'equity', ]}),
+            {'fields': ['timing', 'status', 'equity', 'equity_comment', ]}),
     ]    
     list_filter = ['supergoals', 'goals', 'strategies', 'lead_dept']
     list_display = ('pk', 'name', 'active', 'status', )
