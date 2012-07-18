@@ -39,33 +39,27 @@ class MunicipalityAdmin(admin.OSMGeoAdmin):
     list_display = ('name', )
     search_fields = ['name', ]
 
-
 class CommunityTypeAdmin(admin.ModelAdmin):
     list_display = ('pk', 'abbr', 'name', )
     list_editable = ('abbr', 'name', )
 
-
-class GoalAdmin(admin.ModelAdmin):
-    list_display = ('nr', 'title', 'supergoal')
-    list_editable = ('title', 'supergoal')
+class GoalAdmin(admin.TabularInline):
+    fields = ('nr', 'title', )
     ordering = ['nr']
-
+    model = Goal
 
 class SupergoalAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'abbr', 'title', )
-    list_editable = ('abbr', 'title', )
+    list_display = ('title',)
+    inlines = [GoalAdmin]
 
+class SubStrategyAdmin(admin.TabularInline):
+    fields = ('letter', 'title', )
+    ordering = ['strategy', 'letter', ]
+    model = SubStrategy
 
 class StrategyAdmin(admin.ModelAdmin):
-    list_display = ('nr', 'title', )
-    list_editable = ('title', )
-
-
-class SubStrategyAdmin(admin.ModelAdmin):
-    list_display = ('nr', 'title', )
-    list_editable = ('title',)
-    ordering = ['strategy', 'letter', ]
-
+    list_display = ('title', )
+    inlines=[SubStrategyAdmin]
 
 class SubregionAdmin(admin.ModelAdmin):
     list_display = ('pk', 'abbr', 'name', )
@@ -84,8 +78,6 @@ admin.site.register(Project, ProjectAdmin)
 admin.site.register(Subregion, SubregionAdmin)
 admin.site.register(CommunityType, CommunityTypeAdmin)
 admin.site.register(Strategy, StrategyAdmin)
-admin.site.register(SubStrategy, SubStrategyAdmin)
-admin.site.register(Goal, GoalAdmin)
 admin.site.register(Supergoal, SupergoalAdmin)
 admin.site.register(Municipality, MunicipalityAdmin)
 admin.site.register(Funding, FundingAdmin)
