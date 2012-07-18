@@ -1,0 +1,18 @@
+{% extends "admin/change_form.html" %}
+
+{% block after_related_objects %}
+<script type="text/javascript">
+    (function($){
+        $(function(){
+            /* 
+             * TODO: MetroFuture Admin Improvements
+             * - Add Subregion buttons that select all Municipalities in one Subregion
+             * - Add change event handler on Strategies to select all Substrategies, and Supergoals to select all Goals
+             * - Add change event handler on Substrategy to select Strategy, and Goal to select Supergoal
+            */
+            console.log($().jquery);
+        });
+    }(django.jQuery));
+</script>
+{% endblock %}
+
