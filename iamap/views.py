@@ -3,7 +3,7 @@ from django.utils import simplejson
 
 from django.contrib.gis.db.models import Union
 
-from iamap.models import Project, Municipality, Strategy, SubStrategy, Goal, Supergoal, PROJECT_STATUS
+from iamap.models import Project, Municipality, Subregion, Strategy, SubStrategy, Goal, Supergoal, PROJECT_STATUS
 
 
 def get_filters(request):
@@ -11,6 +11,7 @@ def get_filters(request):
     Returns a JSON object with lists of all available filters.
     """
     municipalities = Municipality.objects.filter(projects__active=True).distinct()
+    subregions = Subregion.objects.filter(municipality__projects__active=True).distinct()
     strategies = Strategy.objects.filter(project__active=True).distinct()
     substrategies = SubStrategy.objects.filter(project__active=True).distinct()
     goals = Goal.objects.filter(project__active=True).distinct()
@@ -18,6 +19,7 @@ def get_filters(request):
 
     response = {
         'municipalities' : [],
+        'subregions': [],
         'strategies': [],
         'substrategies': [],
         'goals': [],
@@ -29,6 +31,12 @@ def get_filters(request):
         response['municipalities'].append(dict(
             id = municipality.pk,
             name = municipality.name, 
+        ))
+    for subregion in subregions:
+        response['subregions'].append(dict(
+            id = subregion.pk,
+            name = subregion.name,
+            municipalities = subregion.muni_string(),
         ))
     for strategy in strategies:
         response['strategies'].append(dict(

@@ -1,6 +1,6 @@
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
-from iamap.models import Project, Strategy, Municipality, Goal, Supergoal, Subregion
+from iamap.models import Project, Strategy, SubStrategy, Municipality, Goal, Supergoal, Subregion
 from iamap.tastyhacks import GeoResource
 
 
@@ -26,6 +26,7 @@ class MunicipalityGeoResource(GeoResource):
     """
 
     projects = fields.ToManyField('iamap.api.ProjectResource', 'projects', full=True)
+    subregion = fields.ToManyField('iamap.api.SubregionResource', 'subregion', full=True)
 
     class Meta:
         queryset = Municipality.objects.filter(projects__active=True).distinct()
@@ -36,6 +37,7 @@ class MunicipalityGeoResource(GeoResource):
             'muni_id': ALL,
             'name': ALL,
             'projects': ALL_WITH_RELATIONS,
+            'subregion': ALL_WITH_RELATIONS,
         }
 
 
@@ -43,6 +45,9 @@ class MunicipalityResource(ModelResource):
     """
     Municipality short-info without geometry as property in Project Muni List.
     """
+
+    subregion = fields.ToManyField('iamap.api.SubregionResource', 'subregion', full=True)
+
     class Meta:
         queryset = Municipality.objects.filter(projects__active=True).distinct()
         allowed_methods = ['get',]
@@ -51,6 +56,7 @@ class MunicipalityResource(ModelResource):
         filtering = {
             'muni_id': ALL,
             'name': ALL,
+            'subregion': ALL_WITH_RELATIONS,
         }
 
 
@@ -62,6 +68,16 @@ class StrategyResource(ModelResource):
         filtering = {
             'nr': ALL,
             'name': ALL,
+        }
+
+class SubStrategyResource(ModelResource):
+    class Meta:
+        queryset = SubStrategy.objects.all()
+        resource_name = 'substrategy'
+        allowed_methods = ['get']
+        filtering = {
+            'letter': ALL,
+            'title': ALL,
         }
 
 class GoalResource(ModelResource):
@@ -91,6 +107,7 @@ class ProjectMuniResource(ModelResource):
 
     municipalities = fields.ToManyField(MunicipalityResource, 'municipalities', full=True)
     strategies = fields.ToManyField(StrategyResource, 'strategies', full=True)
+    substrategies = fields.ToManyField(SubStrategyResource, 'substrategies', full=True)
     goals = fields.ToManyField(GoalResource, 'goals', full=True)
     supergoals = fields.ToManyField(SupergoalResource, 'supergoals', full=True)
 
@@ -105,6 +122,7 @@ class ProjectMuniResource(ModelResource):
             'name': ALL,
             'municipalities': ALL_WITH_RELATIONS, 
             'strategies': ALL_WITH_RELATIONS,
+            'substrategies': ALL_WITH_RELATIONS,
             'goals': ALL_WITH_RELATIONS,
             'supergoals': ALL_WITH_RELATIONS,
             'status': ALL,
@@ -116,6 +134,7 @@ class ProjectResource(ModelResource):
     """
 
     strategies = fields.ToManyField(StrategyResource, 'strategies', full=True)
+    substrategies = fields.ToManyField(SubStrategyResource, 'substrategies', full=True)
     goals = fields.ToManyField(GoalResource, 'goals', full=True)
     supergoals = fields.ToManyField(SupergoalResource, 'supergoals', full=True)
 
@@ -128,6 +147,7 @@ class ProjectResource(ModelResource):
             'id': ALL,
             'name': ALL,
             'strategies': ALL_WITH_RELATIONS,
+            'substrategies': ALL_WITH_RELATIONS,
             'goals': ALL_WITH_RELATIONS,
             'supergoals': ALL_WITH_RELATIONS,
             'status': ALL,

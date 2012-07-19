@@ -167,30 +167,40 @@ margin-right: 20px;
     <!-- MAP FILTERS -->
 
     <div class="filterlabel"><label>Name:</label></div>
-    <input class="mapfilter" type="text" id="name">
+    <input class="mapfilter" type="text" id="name" name="name">
+
+    <div class="filterlabel"><label>Subregion:</label></div>
+    <select class="mapfilter" id="subregions" name="municipalities__subregion">
+      <option value="">-- Show all --</option>
+    </select>
 
     <div class="filterlabel"><label>Municipality:</label></div>
-    <select class="mapfilter" id="municipalities">
+    <select class="mapfilter" id="municipalities" name="municipalities">
       <option value="">-- Show all --</option>
     </select>
 
     <div class="filterlabel"><label>Supergoal:</label></div>
-    <select class="mapfilter" id="supergoals">
+    <select class="mapfilter" id="supergoals" name="supergoals">
       <option value="">-- Show all --</option>
     </select>
 
     <div class="filterlabel"><label>Goal:</label></div>
-    <select class="mapfilter" id="goals">
+    <select class="mapfilter" id="goals" name="goals">
       <option value="">-- Show all --</option>
     </select>
 
     <div class="filterlabel"><label>Strategy:</label></div>
-    <select class="mapfilter" id="strategies">
+    <select class="mapfilter" id="strategies" name="strategies">
+      <option value="">-- Show all --</option>
+    </select>
+
+    <div class="filterlabel"><label>Substrategy:</label></div>
+    <select class="mapfilter" id="substrategies" name="substrategies">
       <option value="">-- Show all --</option>
     </select>
 
     <div class="filterlabel"><label>Status:</label></div>
-    <select class="mapfilter" id="status">
+    <select class="mapfilter" id="status" name="status">
       <option value="">-- Show all --</option>
     </select>
 
@@ -255,7 +265,9 @@ $(document).ready(function() {
 
   var baseUrl = "http://localhost:8000", 
       filter = { "format": "json" },
-      goals = {};
+      goals = {},
+      municipalities = {},
+      subregions = {};
 
   /* 
    * utils 
@@ -372,11 +384,19 @@ $(document).ready(function() {
   // init: build filter options
   $.getJSON(baseUrl + "/filters/",
     function (filters) {
-      // extract goals filter
+      // extract some filter objects that we need later
       goals = filters["goals"];
+      // subregions = filters["subregions"];
       $.each(filters, function (filterKey, filter) {
         $.each(filter, function (optionKey, option) {
           $("<option value='" + option.id + "'>" + option.name + "</option>").appendTo(".mapfilter #" + filterKey);
+          if (filterKey === "municipalities") municipalities[option.id] = { "name": option.name };
+          if (filterKey === "subregions") { 
+            subregions[option.id] = { 
+              "name": option.name,
+              "municipalities": option.municipalities.split(",")
+            };
+          }
         });
         $(".mapfilter #" + filterKey).val("");
       }); 
@@ -394,7 +414,7 @@ $(document).ready(function() {
   $("select.mapfilter").change(function() {   
     var selectedFilter = $("option:selected", this);     
     // build query
-    var filterProperty = selectedFilter.parent().attr("id");
+    var filterProperty = selectedFilter.parent().attr("name");
     var filterValue = selectedFilter.val();
     // remove empty or update new filter query
     if (selectedFilter.val() === "") {
@@ -425,6 +445,25 @@ $(document).ready(function() {
       }
       $(".mapfilter #goals").val("");
     }
+
+    // adjust municipality dropdown
+    if (filterProperty === "municipalities__subregion") {
+      $(".mapfilter #municipalities").children().remove();
+      $("<option value=''>-- Show all --</option>").appendTo(".mapfilter #municipalities");
+      if (filterValue >= 1) { 
+        $.each(subregions[filterValue].municipalities, function(key, muni_id) {
+          $("<option value='" + muni_id + "'>" + municipalities[muni_id]["name"] + "</option>").appendTo(".mapfilter #municipalities");
+        });
+      } else if (filterValue === "") {
+        if (filter["municipalities"]) delete filter["municipalities"];
+        $.each(municipalities, function (key, municipality) {
+          $("<option value='" + key + "'>" + municipality["name"] + "</option>").appendTo(".mapfilter #municipalities");
+        });
+      }
+      $(".mapfilter #municipalities").val("");
+
+    }
+
   });
   // text filter
   $("input.mapfilter").bind("change", function() {
@@ -479,8 +518,13 @@ $(document).ready(function() {
           var muniFilter = {};
           var muniId = "";
           $.each(filter, function (filterKey, filter) {
+            // this needs to be improved...
             if (filterKey !== "format" && filterKey !== "municipalities") {
-              muniFilter["projects__" + filterKey] = filter;
+              if (filterKey === "municipalities__subregion") {
+                muniFilter["subregion"] = filter;
+              } else {
+                muniFilter["projects__" + filterKey] = filter;
+              }
             } else if (filterKey === "municipalities") {
               muniId = filter + "/";
             } else {

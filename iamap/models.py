@@ -54,6 +54,9 @@ class Subregion(models.Model):
     abbr = models.CharField(max_length=10)
     name = models.CharField(max_length=50, blank=True, null=True)
 
+    class Meta:
+        ordering = ['name', ]
+
     def __unicode__(self):
         return self.name
 
