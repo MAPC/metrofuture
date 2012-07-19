@@ -99,6 +99,11 @@ class Strategy(models.Model):
     def __unicode__(self):
         return '%d. %s' % (self.nr, self.title)
 
+    def substrategies_string(self):
+        """ Returns a stringified substrategy list. """
+        substrategies_list = [str(substrategy.pk) for substrategy in self.substrategy_set.all()]
+        return ','.join(substrategies_list)
+
 
 class SubStrategy(models.Model):
     """

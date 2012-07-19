@@ -42,6 +42,7 @@ def get_filters(request):
         response['strategies'].append(dict(
             id = strategy.pk,
             name = strategy.title or strategy.nr or 'n/a',
+            substrategies = strategy.substrategies_string(),
         ))
     for substrategy in substrategies:
         response['substrategies'].append(dict(

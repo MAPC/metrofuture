@@ -67,10 +67,16 @@ margin-right: 20px;
     margin-bottom: 6px;
   }
   .filterlabel {
-    width: 60px;
+    width: 70px;
     color: #FFFFFF;
     padding: 0 12px;
     float: left;
+  }
+  hr.grouper {
+    margin: 4px 14px 8px 12px;
+    color: #22517E;
+    border-top: solid 1px #fff;
+    border-bottom: none;
   }
   #main {
     width: 624px;
@@ -169,6 +175,8 @@ margin-right: 20px;
     <div class="filterlabel"><label>Name:</label></div>
     <input class="mapfilter" type="text" id="name" name="name">
 
+    <hr class="grouper">
+
     <div class="filterlabel"><label>Subregion:</label></div>
     <select class="mapfilter" id="subregions" name="municipalities__subregion">
       <option value="">-- Show all --</option>
@@ -178,6 +186,8 @@ margin-right: 20px;
     <select class="mapfilter" id="municipalities" name="municipalities">
       <option value="">-- Show all --</option>
     </select>
+
+    <hr class="grouper">
 
     <div class="filterlabel"><label>Supergoal:</label></div>
     <select class="mapfilter" id="supergoals" name="supergoals">
@@ -189,6 +199,8 @@ margin-right: 20px;
       <option value="">-- Show all --</option>
     </select>
 
+    <hr class="grouper">
+
     <div class="filterlabel"><label>Strategy:</label></div>
     <select class="mapfilter" id="strategies" name="strategies">
       <option value="">-- Show all --</option>
@@ -198,6 +210,8 @@ margin-right: 20px;
     <select class="mapfilter" id="substrategies" name="substrategies">
       <option value="">-- Show all --</option>
     </select>
+
+    <hr class="grouper">
 
     <div class="filterlabel"><label>Status:</label></div>
     <select class="mapfilter" id="status" name="status">
@@ -266,6 +280,8 @@ $(document).ready(function() {
   var baseUrl = "http://localhost:8000", 
       filter = { "format": "json" },
       goals = {},
+      strategies = {},
+      substrategies = {},
       municipalities = {},
       subregions = {};
 
@@ -397,6 +413,13 @@ $(document).ready(function() {
               "municipalities": option.municipalities.split(",")
             };
           }
+          if (filterKey === "substrategies") substrategies[option.id] = { "name": option.name };
+          if (filterKey === "strategies") { 
+            strategies[option.id] = { 
+              "name": option.name,
+              "substrategies": option.substrategies.split(",")
+            };
+          }
         });
         $(".mapfilter #" + filterKey).val("");
       }); 
@@ -461,7 +484,23 @@ $(document).ready(function() {
         });
       }
       $(".mapfilter #municipalities").val("");
+    }
 
+    // adjust substrategies dropdown
+    if (filterProperty === "strategies") {
+      $(".mapfilter #substrategies").children().remove();
+      $("<option value=''>-- Show all --</option>").appendTo(".mapfilter #substrategies");
+      if (filterValue >= 1) { 
+        $.each(strategies[filterValue].substrategies, function(key, substrategy_id) {
+          $("<option value='" + substrategy_id + "'>" + substrategies[substrategy_id]["name"] + "</option>").appendTo(".mapfilter #substrategies");
+        });
+      } else if (filterValue === "") {
+        if (filter["substrategies"]) delete filter["substrategies"];
+        $.each(substrategies, function (key, substrategy) {
+          $("<option value='" + key + "'>" + substrategy["name"] + "</option>").appendTo(".mapfilter #substrategies");
+        });
+      }
+      $(".mapfilter #substrategies").val("");
     }
 
   });
