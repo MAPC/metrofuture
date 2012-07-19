@@ -5,6 +5,14 @@
     (function($){
         $(function(){
 
+            // Strategies and Supergoals are read-only for user, but need to be saved with the form
+            $("#id_strategies, #id_supergoals").prop("disabled", true);
+            $("div.strategies p.help").text("Read-only field: Strategies are automatically selected with corresponding SubStrategies.");
+            $("div.supergoals p.help").text("Read-only field: Supergoals are automatically selected with corresponding Goals.");
+            $("#project_form").bind("submit", function(event) {
+                $("#id_strategies, #id_supergoals").prop("disabled", false);
+            });
+            
             // Select Strategies with SubStrategies
             $("#id_substrategies").bind("change", function(event) {
                 $("#id_strategies option:selected").removeAttr("selected");
