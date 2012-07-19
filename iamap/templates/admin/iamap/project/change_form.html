@@ -4,13 +4,28 @@
 <script type="text/javascript">
     (function($){
         $(function(){
-            /* 
-             * TODO: MetroFuture Admin Improvements
-             * - Add Subregion buttons that select all Municipalities in one Subregion
-             * - Add change event handler on Strategies to select all Substrategies, and Supergoals to select all Goals
-             * - Add change event handler on Substrategy to select Strategy, and Goal to select Supergoal
-            */
-            console.log($().jquery);
+            // Subregion Buttons
+            $.getJSON("/api/v1/subregions/", 
+                {
+                    "format": "json"
+                },
+                function (data) {
+                    $("<p>Or select all municipalities in a subregion:</p>").appendTo("div.municipalities div.column.span-flexible");
+                    $.each(data.objects, function (key, subregion) {
+                        var $button = $("<button/>", {
+                            id: subregion.abbr,
+                            title: subregion.name,
+                            style: "margin-right: 8px",
+                            text: subregion.abbr
+                        })
+                        .data("municipalities", subregion.municipalities.split(","))
+                        .bind("click", function(event) {
+                            event.preventDefault();
+                            $("#id_municipalities").val($(this).data("municipalities"));
+                        })
+                        .appendTo("div.municipalities div.column.span-flexible");
+                    });
+            });
         });
     }(django.jQuery));
 </script>
