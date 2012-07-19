@@ -4,6 +4,28 @@
 <script type="text/javascript">
     (function($){
         $(function(){
+
+            // Select Strategies with SubStrategies
+            $("#id_substrategies").bind("change", function(event) {
+                $("#id_strategies option:selected").removeAttr("selected");
+                var strategies = [];
+                $(this).children("option:selected").each(function() {
+                    strategies.push($(this).text().split(".")[0]);
+                });
+                $("#id_strategies").val(strategies);
+            });
+
+            // Select Supergoals with Goals
+            $("#id_goals").bind("change", function(event) {
+                $("#id_supergoals option:selected").removeAttr("selected");
+                $(this).children("option:selected").each(function() {
+                    var pattern = /\((.+?)\)/g;
+                    // returns '(CV)' for instance
+                    var supergoal = pattern.exec($(this).text())[0];
+                    $("#id_supergoals > option:contains('" + supergoal + "')").attr("selected", "selected");
+                });
+            });
+            
             // Subregion Buttons
             $.getJSON("/api/v1/subregions/", 
                 {
@@ -27,6 +49,7 @@
                     });
             });
         });
+
     }(django.jQuery));
 </script>
 {% endblock %}
