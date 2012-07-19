@@ -1,8 +1,23 @@
 from tastypie import fields
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
-from iamap.models import Project, Strategy, Municipality, Goal, Supergoal
+from iamap.models import Project, Strategy, Municipality, Goal, Supergoal, Subregion
 from iamap.tastyhacks import GeoResource
 
+
+class SubregionResource(ModelResource):
+
+    municipalities = fields.CharField(attribute='muni_string')
+
+    class Meta:
+        queryset = Subregion.objects.all()
+        resource_name = 'subregions'
+        allowed_methods = ['get', ]
+        include_resource_uri = False
+        filtering = {
+            'abbr': ALL,
+            'name': ALL,
+        }
+        
 
 class MunicipalityGeoResource(GeoResource):
     """

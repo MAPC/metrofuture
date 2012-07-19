@@ -7,11 +7,12 @@ admin.autodiscover()
 
 # API
 from tastypie.api import Api
-from iamap.api import ProjectResource, ProjectMuniResource, MunicipalityGeoResource
+from iamap.api import ProjectResource, ProjectMuniResource, MunicipalityGeoResource, SubregionResource
 
 v1_api = Api(api_name='v1')
 v1_api.register(ProjectMuniResource())
 v1_api.register(MunicipalityGeoResource())
+v1_api.register(SubregionResource())
 
 urlpatterns = patterns('',
     # Examples:
