@@ -57,6 +57,11 @@ class Subregion(models.Model):
     def __unicode__(self):
         return self.name
 
+    def muni_string(self):
+        """ Returns a stringified municipality list. """
+        muni_list = [str(muni.pk) for muni in self.municipality_set.all()]
+        return ','.join(muni_list)
+
 
 class Municipality(models.Model):
     """ Municipalities """
@@ -89,7 +94,7 @@ class Strategy(models.Model):
         ordering = ['nr', ]
 
     def __unicode__(self):
-        return self.title
+        return '%d. %s' % (self.nr, self.title)
 
 
 class SubStrategy(models.Model):
@@ -107,7 +112,7 @@ class SubStrategy(models.Model):
         unique_together = (('strategy', 'letter'),)
 
     def __unicode__(self):
-        return self.title
+        return '%d.%s %s' % (self.strategy.nr, self.letter, self.title)
 
     @property
     def nr(self):
@@ -127,7 +132,7 @@ class Supergoal(models.Model):
         ordering = ['id']
 
     def __unicode__(self):
-        return self.title
+        return '%s (%s)' % (self.title, self.abbr)
 
 
 class Goal(models.Model):
@@ -144,7 +149,7 @@ class Goal(models.Model):
         ordering = ['nr']
 
     def __unicode__(self):
-        return self.title or self.nr
+        return '%d (%s) %s' % (self.nr, self.supergoal.abbr, self.title)
 
 
 class Project(models.Model):
@@ -173,11 +178,11 @@ class Project(models.Model):
     community_types = models.ManyToManyField(CommunityType, blank=True, null=True)
     subregions = models.ManyToManyField(Subregion, blank=True, null=True)   
 
-    # FIXME: redundant
+    # FIXME: redundant, field required by client
     strategies = models.ManyToManyField(Strategy, blank=True, null=True)
     substrategies = models.ManyToManyField(SubStrategy, blank=True, null=True)
     goals = models.ManyToManyField(Goal, blank=True, null=True)
-    # FIXME: redundant
+    # FIXME: redundant, field required by client
     supergoals = models.ManyToManyField(Supergoal, blank=True, null=True)
 
     active = models.BooleanField('Shown on map')
@@ -186,7 +191,11 @@ class Project(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['name']    
+        ordering = ['name']   
+
+    # TODO: m2m_changed signal to add supergoals from goals and strategies from substrategies     
+
+        
 
 
     
