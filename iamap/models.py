@@ -62,7 +62,7 @@ class Subregion(models.Model):
 
     def muni_string(self):
         """ Returns a stringified municipality list. """
-        muni_list = [str(muni.pk) for muni in self.municipality_set.all()]
+        muni_list = [str(muni.pk) for muni in self.municipality_set.filter(projects__active=True).distinct()]
         return ','.join(muni_list)
 
 
@@ -101,7 +101,7 @@ class Strategy(models.Model):
 
     def substrategies_string(self):
         """ Returns a stringified substrategy list. """
-        substrategies_list = [str(substrategy.pk) for substrategy in self.substrategy_set.all()]
+        substrategies_list = [str(substrategy.pk) for substrategy in self.substrategy_set.filter(project__active=True).distinct()]
         return ','.join(substrategies_list)
 
 
@@ -141,6 +141,11 @@ class Supergoal(models.Model):
 
     def __unicode__(self):
         return '%s (%s)' % (self.title, self.abbr)
+
+    def goals_string(self):
+        """ Returns a stringified substrategy list. """
+        goals_list = [str(goal.pk) for goal in self.goal_set.filter(project__active=True).distinct()]
+        return ','.join(goals_list)
 
 
 class Goal(models.Model):

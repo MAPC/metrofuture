@@ -105,6 +105,7 @@ margin-right: 20px;
 <!--[if lte IE 8]><link rel="stylesheet" href="{{ STATIC_URL }}css/leaflet.ie.css" /><![endif]-->
 <script src="{{ STATIC_URL }}libs/leaflet/leaflet.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}libs/mapc-layers.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}libs/jquery.url.js"></script>
 
 
 </head>
@@ -173,7 +174,7 @@ margin-right: 20px;
     <!-- MAP FILTERS -->
 
     <div class="filterlabel"><label>Name:</label></div>
-    <input class="mapfilter" type="text" id="name" name="name">
+    <input class="mapfilter" type="text" id="name" name="name" value="" />
 
     <hr class="grouper">
 
@@ -278,12 +279,14 @@ pageTracker._trackPageview();
 $(document).ready(function() {
 
   var baseUrl = "http://localhost:8000", 
-      filter = { "format": "json" },
-      goals = {},
-      strategies = {},
-      substrategies = {},
-      municipalities = {},
-      subregions = {};
+      filterdata = {},
+      filtermap = {
+
+      };
+
+  // see if we have a permalink
+  var url_param = $.url().param();
+  var filter = $.extend( { "format": "json" }, url_param);
 
   /* 
    * utils 
@@ -349,6 +352,59 @@ $(document).ready(function() {
     });
   }
 
+  // sort dropdowns by text
+  // sort can't be called on jQuery object, maybe jQuery v1 issue
+  // need to translate jQuyer object to array before sorting
+  $.sortDropDownListByText = function (selector) {
+    var foption = $(selector + " option:first");
+    var ddlist = [];
+    $.each($(selector + " option:not(:first)"), function (key, option) {
+      ddlist.push(option)
+    });
+    ddlist.sort(function(a, b) {
+       return a.text == b.text ? 0 : a.text < b.text ? -1 : 1
+    });
+    $.each(ddlist, function (key, option) {
+      $(selector).append(option);
+    });
+    $(selector).prepend(foption);
+  };
+
+  // adjust sub-dropdowns according to selection in parent dropdowns
+  $.adjustChildFilter = function (filterProperty, filterValue) {
+
+    var doit = function (dropdownSelector, childrenFull, childrenSublist) {
+      // clear child dropdown
+      $(dropdownSelector).children().remove();
+      $(dropdownSelector).append("<option value=''>-- Show all --</option>");
+      if (childrenSublist.length > 0) {
+        // build child dropdown subset
+        $.each(childrenSublist, function(key, childId) {
+          $(dropdownSelector).append("<option value='" + childId + "'>" + childrenFull[childId]["name"] + "</option>");
+        });
+      } else {
+        // clear child filter
+        var childfilterName = $(dropdownSelector).attr("id");
+        if (filter[childfilterName]) delete filter[childfilterName];
+        // rebuild goal dropdown with entire list
+        $.each(childrenFull, function (key, child) {
+          $(dropdownSelector).append("<option value='" + key + "'>" + child["name"] + "</option>");
+        });
+      }
+      // sort
+      $.sortDropDownListByText(dropdownSelector);
+      // default selection
+      $(dropdownSelector).val("");
+    }
+
+    // switch
+    if (filterProperty === "municipalities__subregion") doit("#municipalities", filterdata.municipalities, ((filterValue === "") ? [] : filterdata.subregions[filterValue].municipalities));
+    if (filterProperty === "supergoals") doit("#goals", filterdata.goals, ((filterValue === "") ? [] : filterdata.supergoals[filterValue].goals));
+    if (filterProperty === "strategies") doit("#substrategies", filterdata.substrategies, ((filterValue === "") ? [] : filterdata.strategies[filterValue].substrategies));
+  
+  }
+
+
   /* 
    * page
    */
@@ -399,37 +455,50 @@ $(document).ready(function() {
 
   // init: build filter options
   $.getJSON(baseUrl + "/filters/",
-    function (filters) {
-      // extract some filter objects that we need later
-      goals = filters["goals"];
-      // subregions = filters["subregions"];
-      $.each(filters, function (filterKey, filter) {
+    function (data) {
+      // make globally available
+      filterdata = data;
+      $.each(filterdata, function (filterKey, filter) {
         $.each(filter, function (optionKey, option) {
-          $("<option value='" + option.id + "'>" + option.name + "</option>").appendTo(".mapfilter #" + filterKey);
-          if (filterKey === "municipalities") municipalities[option.id] = { "name": option.name };
-          if (filterKey === "subregions") { 
-            subregions[option.id] = { 
-              "name": option.name,
-              "municipalities": option.municipalities.split(",")
-            };
-          }
-          if (filterKey === "substrategies") substrategies[option.id] = { "name": option.name };
-          if (filterKey === "strategies") { 
-            strategies[option.id] = { 
-              "name": option.name,
-              "substrategies": option.substrategies.split(",")
-            };
-          }
+          // build dropdown
+          $("<option value='" + optionKey + "'>" + option.name + "</option>").appendTo(".mapfilter #" + filterKey);
+          // serialize string as lists
+          if (filterKey === "subregions") this.municipalities = this.municipalities.split(",");
+          if (filterKey === "supergoals") this.goals = this.goals.split(",");
+          if (filterKey === "strategies") this.substrategies = this.substrategies.split(",");
+
         });
         $(".mapfilter #" + filterKey).val("");
+        $.sortDropDownListByText("#" + filterKey);
       }); 
-      // load municipalities
-      $.getJSON(baseUrl + "/api/v1/municipalities/", 
-        {"format": "json"},
-        function (data) {
-          $.renderMunicipalities(data.objects, municipalityLayer);
-          $.spinner.hide();
-      });       
+
+      var filterLen = 0;
+      for (var i in filter) {
+        filterLen++
+      }
+      if (filterLen === 1 && filter["format"] === "json") { 
+        // default map with all municipalities
+        $.getJSON(baseUrl + "/api/v1/municipalities/", 
+          {"format": "json"},
+          function (data) {
+            $.renderMunicipalities(data.objects, municipalityLayer);
+            $.spinner.hide();
+        });
+      } else { 
+        // we have url parameters
+        for (var i in filter) {
+          if (i !== "format") {
+            if (["municipalities__subregion", "supergoals", "strategies"].indexOf(i) != -1) {
+              // it's a parent selector dropdown
+              // adjust child dropdown
+              $.adjustChildFilter(i, filter[i]);
+            }
+            var filterElement=document.getElementsByName(i.replace("__icontains", ""));
+            $(filterElement).val(filter[i]);
+          }
+        }
+        $.searchProjects();
+      } 
   });
 
 
@@ -446,62 +515,8 @@ $(document).ready(function() {
       filter[filterProperty] = filterValue;
     }
 
-    // adjust goals filter to selected supergoal
-    if (filterProperty === "supergoals") {
-      // clear options
-      $(".mapfilter #goals").children().remove();
-      $("<option value=''>-- Show all --</option>").appendTo(".mapfilter #goals");
-      if (filterValue >= 1) {  
-        // iterate through goal filter and attache all supergoal = supergoal items to selector
-        $.each(goals, function (key, goal) {
-          if (goal["supergoal"] === parseInt(filterValue)) {
-            $("<option value='" + goal["id"] + "'>" + goal["name"] + "</option>").appendTo(".mapfilter #goals");
-          }
-        });
-      } else if (filterValue === "") {
-        // clear goal filter
-        if (filter["goals"]) delete filter["goals"];
-        // rebuild goal dropdown with entire list
-        $.each(goals, function (key, goal) {
-          $("<option value='" + goal["id"] + "'>" + goal["name"] + "</option>").appendTo(".mapfilter #goals");
-        });
-      }
-      $(".mapfilter #goals").val("");
-    }
-
-    // adjust municipality dropdown
-    if (filterProperty === "municipalities__subregion") {
-      $(".mapfilter #municipalities").children().remove();
-      $("<option value=''>-- Show all --</option>").appendTo(".mapfilter #municipalities");
-      if (filterValue >= 1) { 
-        $.each(subregions[filterValue].municipalities, function(key, muni_id) {
-          $("<option value='" + muni_id + "'>" + municipalities[muni_id]["name"] + "</option>").appendTo(".mapfilter #municipalities");
-        });
-      } else if (filterValue === "") {
-        if (filter["municipalities"]) delete filter["municipalities"];
-        $.each(municipalities, function (key, municipality) {
-          $("<option value='" + key + "'>" + municipality["name"] + "</option>").appendTo(".mapfilter #municipalities");
-        });
-      }
-      $(".mapfilter #municipalities").val("");
-    }
-
-    // adjust substrategies dropdown
-    if (filterProperty === "strategies") {
-      $(".mapfilter #substrategies").children().remove();
-      $("<option value=''>-- Show all --</option>").appendTo(".mapfilter #substrategies");
-      if (filterValue >= 1) { 
-        $.each(strategies[filterValue].substrategies, function(key, substrategy_id) {
-          $("<option value='" + substrategy_id + "'>" + substrategies[substrategy_id]["name"] + "</option>").appendTo(".mapfilter #substrategies");
-        });
-      } else if (filterValue === "") {
-        if (filter["substrategies"]) delete filter["substrategies"];
-        $.each(substrategies, function (key, substrategy) {
-          $("<option value='" + key + "'>" + substrategy["name"] + "</option>").appendTo(".mapfilter #substrategies");
-        });
-      }
-      $(".mapfilter #substrategies").val("");
-    }
+    // adjust dropdowns
+    $.adjustChildFilter(filterProperty, filterValue);
 
   });
   // text filter
@@ -522,7 +537,7 @@ $(document).ready(function() {
     projectLayer.clearLayers();
     $("#project-detail").empty();
     // determining if a filter was chosen
-    filterLen = 0;
+    var filterLen = 0;
     for (var i in filter) {
       filterLen++
     }
@@ -545,7 +560,7 @@ $(document).ready(function() {
         // search result header
         if (resultCount > 0) {
           var projectNoun = (resultCount === 1) ? "Project" : "Projects";
-          $("<h2 class='searchresult'>" + resultCount + " " + projectNoun + " found:</h2>").appendTo("#project-detail");
+          $("<h2 class='searchresult'><a>" + resultCount + " " + projectNoun + " found:</a></h2>").appendTo("#project-detail");
           // project list TODO: copy of line 300, not ideal...
           $.each(resultProjects, function (key, project) {
             if (project.url !== "") project.name = "<a href='" + project.url + "' target='_blank'>" + project.name + "</a>";
@@ -570,6 +585,8 @@ $(document).ready(function() {
               muniFilter[filterKey] = filter;
             }
           });
+          // update permalink
+          $("h2.searchresult a").attr("href", window.location.pathname + "?" + $.param(filter).replace("format=json&", ""));
           // query municipalities
           $.getJSON(baseUrl + "/api/v1/municipalities/" + muniId,
             muniFilter,
