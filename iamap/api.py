@@ -98,7 +98,7 @@ class SupergoalResource(ModelResource):
         filtering = {
             'abbr': ALL,
             'title': ALL,
-        }
+        }   
 
 class ProjectMuniResource(ModelResource):
     """
@@ -151,4 +151,6 @@ class ProjectResource(ModelResource):
             'goals': ALL_WITH_RELATIONS,
             'supergoals': ALL_WITH_RELATIONS,
             'status': ALL,
+            'lead_dept': ALL,
+            'collab_dept': ALL,
         }
