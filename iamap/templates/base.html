@@ -541,6 +541,11 @@ $(document).ready(function() {
 
   // search for projects
   $.searchProjects = function() {
+    /*
+     * We search for projects, build the project list
+     * and then request municipalities as GeoJSON 
+     * to render the map
+     */
     $.spinner.show();
     // clear map and project layer
     municipalityLayer.clearLayers();
@@ -571,7 +576,7 @@ $(document).ready(function() {
         if (resultCount > 0) {
           var projectNoun = (resultCount === 1) ? "Project" : "Projects";
           $("<h2 class='searchresult'><a>" + resultCount + " " + projectNoun + " found:</a></h2>").appendTo("#project-detail");
-          // project list TODO: copy of line 300, not ideal...
+          // FIXME: project list, copy of line 300, not ideal...
           $.each(resultProjects, function (key, project) {
             if (project.url !== "") project.name = "<a href='" + project.url + "' target='_blank'>" + project.name + "</a>";
             $("<h3>" + project.name + "</h3>").appendTo("#project-detail");
