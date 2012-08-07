@@ -276,6 +276,16 @@ pageTracker._trackPageview();
 
 <script type="text/javascript">
 
+// IE8 indexOf fix
+if (!Array.prototype.indexOf) {
+  Array.prototype.indexOf = function(obj, start) {
+   for (var i = (start || 0), j = this.length; i < j; i++) {
+       if (this[i] === obj) { return i; }
+   }
+   return -1;
+  }
+}
+
 $(document).ready(function() {
 
   var baseUrl = "http://localhost:8000", 
