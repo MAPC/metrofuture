@@ -129,14 +129,14 @@ class SubStrategy(models.Model):
 
 class Supergoal(models.Model):
     """
-    MetroFuture Supergoals
+    MetroFuture Goals (initially called 'Supergoals')
     """
     abbr = models.CharField(max_length=2)
     title = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
-        verbose_name = _('Supergoal')
-        verbose_name_plural = _('Supergoals')
+        verbose_name = _('Goal')
+        verbose_name_plural = _('Goals')
         ordering = ['id']
 
     def __unicode__(self):
@@ -150,15 +150,15 @@ class Supergoal(models.Model):
 
 class Goal(models.Model):
     """
-    MetroFuture Goals
+    MetroFuture Subgoals (initially called 'Goals')
     """
     nr = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=100, blank=True, null=True)
     supergoal = models.ForeignKey(Supergoal)
         
     class Meta:
-        verbose_name = _('Goal')
-        verbose_name_plural = _('Goals')
+        verbose_name = _('Subgoal')
+        verbose_name_plural = _('Subgoals')
         ordering = ['nr']
 
     def __unicode__(self):
@@ -194,9 +194,9 @@ class Project(models.Model):
     # FIXME: redundant, field required by client
     strategies = models.ManyToManyField(Strategy, blank=True, null=True)
     substrategies = models.ManyToManyField(SubStrategy, blank=True, null=True)
-    goals = models.ManyToManyField(Goal, blank=True, null=True)
+    goals = models.ManyToManyField(Goal, blank=True, null=True, verbose_name=u'Subgoals')
     # FIXME: redundant, field required by client
-    supergoals = models.ManyToManyField(Supergoal, blank=True, null=True)
+    supergoals = models.ManyToManyField(Supergoal, blank=True, null=True, verbose_name=u'Goals')
 
     active = models.BooleanField('Shown on map')
 
