@@ -10,7 +10,7 @@ from iamap.models import Project, Subregion, CommunityType, Strategy, Goal, Supe
 
 
 CSV_FIELD_NAMES = {
-    'iamap.project': ['pk', 'name', 'desc', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'last_modified', ]
+    'iamap.project': ['pk', 'name', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'last_modified', ]
 }
 
 
@@ -37,7 +37,12 @@ def export_as_csv(modeladmin, request, queryset):
         try:
             writer.writerow([getattr(obj, field) for field in field_names])
         except UnicodeEncodeError:
-            print 'Could not export data row.'
+            # Log error in export file
+            # FIXME: force proper encoding
+            row = [ '-' for field in field_names ]
+            row[0] = 'Error: Could not export data for %i.' % (obj.id)
+            writer.writerow(row)
+
     return response
 
 export_as_csv.short_description = _('Export selected %(verbose_name_plural)s as CSV file')
