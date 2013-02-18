@@ -230,8 +230,11 @@ class Project(models.Model):
 
     @property
     def community_type_string(self):
-        ct = [m.community_type.name for m in self.municipalities.all()]
-        # remove duplicates (list > set > list)
+        ct = []
+        for m in self.municipalities.all():
+            if m.community_type != None:
+                ct.append(m.community_type.name)
+        # # remove duplicates (list > set > list)
         ct = sorted(list(set(ct)))
         ct_string = ', '.join(ct)
         return ct_string
