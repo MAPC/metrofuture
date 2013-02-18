@@ -200,6 +200,9 @@ class Project(models.Model):
 
     active = models.BooleanField('Shown on map')
 
+    last_modified = models.DateTimeField() # auto_now=True
+    created = models.DateTimeField() # auto_now_add=True
+
     def __unicode__(self):
         return self.name
 
