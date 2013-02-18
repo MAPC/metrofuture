@@ -216,14 +216,22 @@ class Project(models.Model):
         subregions = [s.abbr for s in muni_subregions for s in s]
         # remove duplicates (list > set > list)
         subregions = sorted(list(set(subregions)))
-        subregions_string = ','.join(subregions)
+        subregions_string = ', '.join(subregions)
         return subregions_string
 
     @property
     def lead_dept_string(self):
         depts = [d.name for d in self.lead_dept.all()]
-        depts_string = ','.join(depts)
+        depts_string = ', '.join(depts)
         return depts_string
+
+    @property
+    def community_type_string(self):
+        ct = [m.community_type.name for m in self.municipalities.all()]
+        # remove duplicates (list > set > list)
+        ct = sorted(list(set(ct)))
+        ct_string = ', '.join(ct)
+        return ct_string
     # TODO: m2m_changed signal to add supergoals from goals and strategies from substrategies     
 
         

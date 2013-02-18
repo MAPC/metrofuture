@@ -12,16 +12,17 @@ class ProjectAdmin(reversion.VersionAdmin):
         ('Collaborations', 
             {'fields': ['lead_dept', 'collab_dept', 'collab_ext', 'client', 'funding', ]}),
         ('Regional properties',
-            {'fields': ['municipalities_type', 'municipal_specific', 'municipalities', ]}),
+            {'fields': ['municipalities_type', 'municipal_specific', 'municipalities', 'subregions_string', 'community_type_string', ]}),
         ('Other project properties',
             {'fields': ['timing', 'status', 'equity', 'equity_comment', ]}),
     ]    
-    list_filter = ['municipalities__subregion', 'municipalities', 'lead_dept', 'status', 'supergoals', 'goals', 'strategies', ]
+    list_filter = ['municipalities__subregion', 'municipalities', 'municipalities__community_type', 'lead_dept', 'status', 'supergoals', 'goals', 'strategies', ]
     date_hierarchy = 'last_modified'
-    list_display = ('pk', 'name', 'desc', 'status', 'subregions_string', 'lead_dept_string', 'last_modified', )
+    list_display = ('pk', 'name', 'desc', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'last_modified', )
     list_editable = ('name', 'desc', 'status', )
     search_fields = ['name', 'desc']
     ordering = ['id']
+    readonly_fields = ('subregions_string', 'community_type_string',)
 
 
     def changelist_view(self, request, extra_context=None):
