@@ -16,10 +16,10 @@ class ProjectAdmin(reversion.VersionAdmin):
         ('Other project properties',
             {'fields': ['timing', 'status', 'equity', 'equity_comment', ]}),
     ]    
-    list_filter = ['supergoals', 'goals', 'strategies', 'lead_dept', 'status', ]
+    list_filter = ['municipalities__subregion', 'municipalities', 'lead_dept', 'status', 'supergoals', 'goals', 'strategies', ]
     date_hierarchy = 'last_modified'
-    list_display = ('pk', 'name', 'active', 'status', )
-    list_editable = ('name', 'active', 'status', )
+    list_display = ('pk', 'name', 'desc', 'status', 'subregions_string', 'lead_dept_string', 'last_modified', )
+    list_editable = ('name', 'desc', 'status', )
     search_fields = ['name', 'desc']
     ordering = ['id']
 

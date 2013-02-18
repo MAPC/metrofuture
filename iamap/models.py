@@ -209,6 +209,21 @@ class Project(models.Model):
     class Meta:
         ordering = ['name']   
 
+    @property
+    def subregions_string(self):
+        muni_subregions = [m.subregion.all() for m in self.municipalities.all() for s in m.subregion.all()]
+        # flatten list
+        subregions = [s.abbr for s in muni_subregions for s in s]
+        # remove duplicates (list > set > list)
+        subregions = sorted(list(set(subregions)))
+        subregions_string = ','.join(subregions)
+        return subregions_string
+
+    @property
+    def lead_dept_string(self):
+        depts = [d.name for d in self.lead_dept.all()]
+        depts_string = ','.join(depts)
+        return depts_string
     # TODO: m2m_changed signal to add supergoals from goals and strategies from substrategies     
 
         
