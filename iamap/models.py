@@ -207,7 +207,10 @@ class Project(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['name']   
+        verbose_name = 'Project'
+        verbose_name_plural = 'Projects'
+        ordering = ['name']  
+
 
     @property
     def subregions_string(self):

@@ -1,7 +1,47 @@
-from iamap.models import Project, Subregion, CommunityType, Strategy, Goal, Supergoal, Municipality, Department, Funding, SubStrategy
 from django.contrib.gis import admin
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
+from django.utils.translation import ugettext as _
 
 import reversion
+import csv
+
+from iamap.models import Project, Subregion, CommunityType, Strategy, Goal, Supergoal, Municipality, Department, Funding, SubStrategy
+
+
+CSV_FIELD_NAMES = {
+    'iamap.project': ['pk', 'name', 'desc', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'last_modified', ]
+}
+
+
+def export_as_csv(modeladmin, request, queryset):
+    """
+    Generic csv export admin action.
+    """
+
+    if not request.user.is_staff:
+        raise PermissionDenied
+
+    opts = modeladmin.model._meta
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=%s.csv' % unicode(opts).replace('.', '_')
+    writer = csv.writer(response)
+
+    field_names = CSV_FIELD_NAMES.get(unicode(opts), [field.name for field in opts.fields])
+    
+    # Write a first row with header information
+    writer.writerow(field_names)
+    
+    # Write data rows
+    for obj in queryset:
+        try:
+            writer.writerow([getattr(obj, field) for field in field_names])
+        except UnicodeEncodeError:
+            print 'Could not export data row.'
+    return response
+
+export_as_csv.short_description = _('Export selected %(verbose_name_plural)s as CSV file')
+
 
 class ProjectAdmin(reversion.VersionAdmin):
     fieldsets = [
@@ -23,6 +63,7 @@ class ProjectAdmin(reversion.VersionAdmin):
     search_fields = ['name', 'desc']
     ordering = ['id']
     readonly_fields = ('subregions_string', 'community_type_string',)
+    actions = [export_as_csv]
 
 
     def changelist_view(self, request, extra_context=None):
