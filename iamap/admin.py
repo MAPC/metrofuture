@@ -10,7 +10,7 @@ from iamap.models import Project, Subregion, CommunityType, Strategy, Goal, Supe
 
 
 CSV_FIELD_NAMES = {
-    'iamap.project': ['pk', 'name', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'last_modified', ]
+    'iamap.project': ['pk', 'name', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'nr_goals', 'nr_subgoals', 'nr_municipalities', 'last_modified', ]
 }
 
 
@@ -63,7 +63,7 @@ class ProjectAdmin(reversion.VersionAdmin):
     ]    
     list_filter = ['municipalities__subregion', 'municipalities', 'municipalities__community_type', 'lead_dept', 'status', 'supergoals', 'goals', 'strategies', ]
     date_hierarchy = 'last_modified'
-    list_display = ('pk', 'name', 'desc', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'last_modified', )
+    list_display = ('pk', 'name', 'desc', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'nr_goals', 'nr_subgoals', 'nr_municipalities', 'last_modified',)
     list_editable = ('name', 'desc', 'status', )
     search_fields = ['name', 'desc']
     ordering = ['id']

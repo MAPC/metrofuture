@@ -240,7 +240,20 @@ class Project(models.Model):
         return ct_string
     # TODO: m2m_changed signal to add supergoals from goals and strategies from substrategies     
 
-        
+    @property
+    def nr_subgoals(self):
+        subgoals = self.goals.all()
+        return len(subgoals)
+
+    @property
+    def nr_goals(self):
+        goals = self.supergoals.all()
+        return len(goals)
+
+    @property
+    def nr_municipalities(self):
+        municipalities = self.municipalities.all()
+        return len(municipalities)
 
 
     
