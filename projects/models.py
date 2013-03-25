@@ -127,9 +127,9 @@ class SubStrategy(models.Model):
         return '%d.%s' % (self.strategy.nr, self.letter)
     
 
-class Supergoal(models.Model):
+class Goal(models.Model): # Goal
     """
-    MetroFuture Goals (initially called 'Supergoals')
+    MetroFuture Goals
     """
     abbr = models.CharField(max_length=2)
     title = models.CharField(max_length=100, blank=True, null=True)
@@ -142,19 +142,19 @@ class Supergoal(models.Model):
     def __unicode__(self):
         return '%s (%s)' % (self.title, self.abbr)
 
-    def goals_string(self):
+    def subgoals_string(self):
         """ Returns a stringified substrategy list. """
-        goals_list = [str(goal.pk) for goal in self.goal_set.filter(project__active=True).distinct()]
-        return ','.join(goals_list)
+        subgoals_list = [str(goal.pk) for goal in self.subgoal_set.filter(project__active=True).distinct()]
+        return ','.join(subgoals_list)
 
 
-class Goal(models.Model):
+class SubGoal(models.Model): #SubGoal
     """
-    MetroFuture Subgoals (initially called 'Goals')
+    MetroFuture Subgoals
     """
     nr = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=100, blank=True, null=True)
-    supergoal = models.ForeignKey(Supergoal)
+    goal = models.ForeignKey(Goal)
         
     class Meta:
         verbose_name = _('Subgoal')
@@ -162,7 +162,7 @@ class Goal(models.Model):
         ordering = ['nr']
 
     def __unicode__(self):
-        return '%d (%s) %s' % (self.nr, self.supergoal.abbr, self.title)
+        return '%d (%s) %s' % (self.nr, self.goal.abbr, self.title)
 
 
 class Project(models.Model):
@@ -194,9 +194,9 @@ class Project(models.Model):
     # FIXME: redundant, field required by client
     strategies = models.ManyToManyField(Strategy, blank=True, null=True)
     substrategies = models.ManyToManyField(SubStrategy, blank=True, null=True)
-    goals = models.ManyToManyField(Goal, blank=True, null=True, verbose_name=u'Subgoals')
+    subgoals = models.ManyToManyField(SubGoal, blank=True, null=True, verbose_name=u'Subgoals')
     # FIXME: redundant, field required by client
-    supergoals = models.ManyToManyField(Supergoal, blank=True, null=True, verbose_name=u'Goals')
+    goals = models.ManyToManyField(Goal, blank=True, null=True, verbose_name=u'Goals')
 
     active = models.BooleanField('Shown on map')
 
@@ -247,7 +247,7 @@ class Project(models.Model):
 
     @property
     def nr_goals(self):
-        goals = self.supergoals.all()
+        goals = self.goals.all()
         return len(goals)
 
     @property

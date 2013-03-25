@@ -6,11 +6,11 @@ from django.utils.translation import ugettext as _
 import reversion
 import csv
 
-from iamap.models import Project, Subregion, CommunityType, Strategy, Goal, Supergoal, Municipality, Department, Funding, SubStrategy
+from projects.models import Project, Subregion, CommunityType, Strategy, Goal, SubGoal, Municipality, Department, Funding, SubStrategy
 
 
 CSV_FIELD_NAMES = {
-    'iamap.project': ['pk', 'name', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'nr_goals', 'nr_subgoals', 'nr_municipalities', 'last_modified', ]
+    'projects.project': ['pk', 'name', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'nr_goals', 'nr_subgoals', 'nr_municipalities', 'last_modified', ]
 }
 
 
@@ -53,7 +53,7 @@ class ProjectAdmin(reversion.VersionAdmin):
         (None, 
             {'fields': ['name', 'desc', 'url', 'thumbnail', 'active', ]}),
         ('MetroFuture', 
-            {'fields': ['strategies', 'substrategies', 'supergoals', 'goals',]}),
+            {'fields': ['strategies', 'substrategies', 'goals', 'subgoals',]}),
         ('Collaborations', 
             {'fields': ['lead_dept', 'collab_dept', 'collab_ext', 'client', 'funding', ]}),
         ('Regional properties',
@@ -61,7 +61,7 @@ class ProjectAdmin(reversion.VersionAdmin):
         ('Other project properties',
             {'fields': ['timing', 'status', 'equity', 'equity_comment', ]}),
     ]    
-    list_filter = ['municipalities__subregion', 'municipalities', 'municipalities__community_type', 'lead_dept', 'status', 'supergoals', 'goals', 'strategies', ]
+    list_filter = ['municipalities__subregion', 'municipalities', 'municipalities__community_type', 'lead_dept', 'status', 'goals', 'strategies', ]
     date_hierarchy = 'last_modified'
     list_display = ('pk', 'name', 'desc', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'nr_goals', 'nr_subgoals', 'nr_municipalities', 'last_modified',)
     list_editable = ('name', 'desc', 'status', )
@@ -86,19 +86,20 @@ class ProjectAdmin(reversion.VersionAdmin):
 class MunicipalityAdmin(admin.OSMGeoAdmin):    
     list_display = ('name', )
     search_fields = ['name', ]
+    exclude = ('geometry',)
 
 class CommunityTypeAdmin(admin.ModelAdmin):
     list_display = ('pk', 'abbr', 'name', )
     list_editable = ('abbr', 'name', )
 
-class GoalAdmin(admin.TabularInline):
+class SubGoalAdmin(admin.TabularInline):
     fields = ('nr', 'title', )
     ordering = ['nr']
-    model = Goal
+    model = SubGoal
 
-class SupergoalAdmin(admin.ModelAdmin):
+class GoalAdmin(admin.ModelAdmin):
     list_display = ('title',)
-    inlines = [GoalAdmin]
+    inlines = [SubGoalAdmin]
 
 class SubStrategyAdmin(admin.TabularInline):
     fields = ('letter', 'title', )
@@ -126,7 +127,7 @@ admin.site.register(Project, ProjectAdmin)
 admin.site.register(Subregion, SubregionAdmin)
 admin.site.register(CommunityType, CommunityTypeAdmin)
 admin.site.register(Strategy, StrategyAdmin)
-admin.site.register(Supergoal, SupergoalAdmin)
+admin.site.register(Goal, GoalAdmin)
 admin.site.register(Municipality, MunicipalityAdmin)
 admin.site.register(Funding, FundingAdmin)
 admin.site.register(Department, DepartmentAdmin)

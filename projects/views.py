@@ -3,7 +3,7 @@ from django.utils import simplejson
 
 from django.contrib.gis.db.models import Union
 
-from iamap.models import Project, Municipality, Subregion, Strategy, SubStrategy, Goal, Supergoal, PROJECT_STATUS
+from projects.models import Project, Municipality, Subregion, Strategy, SubStrategy, SubGoal, Goal, PROJECT_STATUS
 
 
 def get_filters(request):
@@ -14,16 +14,16 @@ def get_filters(request):
     subregions = Subregion.objects.filter(municipality__in=municipalities)
     substrategies = SubStrategy.objects.filter(project__active=True).distinct()
     strategies = Strategy.objects.filter(substrategy__in=substrategies)
-    goals = Goal.objects.filter(project__active=True).distinct()
-    supergoals = Supergoal.objects.filter(goal__in=goals)
+    subgoals = SubGoal.objects.filter(project__active=True).distinct()
+    goals = Goal.objects.filter(subgoal__in=subgoals)
 
     response = {
         'municipalities' : {},
         'subregions': {},
         'strategies': {},
         'substrategies': {},
+        'subgoals': {},
         'goals': {},
-        'supergoals': {},
         'status': {},
     }
 
@@ -34,6 +34,7 @@ def get_filters(request):
     for subregion in subregions:
         response['subregions'][subregion.pk] = dict(
             name = subregion.name,
+            abbr = subregion.abbr,
             municipalities = subregion.muni_string(),
         )
     for strategy in strategies:
@@ -45,15 +46,15 @@ def get_filters(request):
         response['substrategies'][substrategy.pk] = dict(
             name = substrategy.title or strategy.nr or 'n/a',
         )
+    for subgoal in subgoals:
+        response['subgoals'][subgoal.pk] = dict(
+            name = subgoal.title or 'n/a',
+            goal = subgoal.goal.id,
+        )
     for goal in goals:
         response['goals'][goal.pk] = dict(
-            name = goal.title or 'n/a',
-            supergoal = goal.supergoal.id,
-        )
-    for supergoal in supergoals:
-        response['supergoals'][supergoal.pk] = dict(
-            name = supergoal.title,  
-            goals = supergoal.goals_string(),
+            name = goal.title,  
+            subgoals = goal.subgoals_string(),
         )
     for k,v in PROJECT_STATUS:
         response['status'][k] = dict(

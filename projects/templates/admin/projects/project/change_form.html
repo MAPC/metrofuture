@@ -5,12 +5,12 @@
     (function($){
         $(function(){
 
-            // Strategies and Supergoals are read-only for user, but need to be saved with the form
-            $("#id_strategies, #id_supergoals").prop("disabled", true);
-            $("div.strategies p.help").text("Read-only field: Strategies are automatically selected with corresponding SubStrategies.");
-            $("div.supergoals p.help").text("Read-only field: Supergoals are automatically selected with corresponding Goals.");
+            // Strategies and Goals are read-only for user, but need to be saved with the form
+            $("#id_strategies, #id_goals").prop("disabled", true);
+            $(".strategies .c-2 .grp-help").text("Read-only field: Strategies are automatically selected with corresponding SubStrategies.");
+            $(".goals .c-2 .grp-help").text("Read-only field: Goals are automatically selected with corresponding Subgoals.");
             $("#project_form").bind("submit", function(event) {
-                $("#id_strategies, #id_supergoals").prop("disabled", false);
+                $("#id_strategies, #id_goals").prop("disabled", false);
             });
             
             // Select Strategies with SubStrategies
@@ -23,29 +23,29 @@
                 $("#id_strategies").val(strategies);
             });
 
-            // Select Supergoals with Goals
-            $("#id_goals").bind("change", function(event) {
-                $("#id_supergoals option:selected").removeAttr("selected");
+            // Select Goals with Subgoals
+            $("#id_subgoals").bind("change", function(event) {
+                $("#id_goals option:selected").removeAttr("selected");
                 $(this).children("option:selected").each(function() {
                     var pattern = /\((.+?)\)/g;
                     // returns '(CV)' for instance
-                    var supergoal = pattern.exec($(this).text())[0];
-                    $("#id_supergoals > option:contains('" + supergoal + "')").attr("selected", "selected");
+                    var goal = pattern.exec($(this).text())[0];
+                    $("#id_goals > option:contains('" + goal + "')").attr("selected", "selected");
                 });
             });
             
             // Subregion Buttons
-            $.getJSON("/api/v1/subregions/", 
-                {
-                    "format": "json"
-                },
+            $.getJSON("/filters/",
                 function (data) {
-                    $("<p>Or select all municipalities in a subregion:</p>").appendTo("div.municipalities div.column.span-flexible");
-                    $.each(data.objects, function (key, subregion) {
-                        var $button = $("<button/>", {
+                    $("<p>Or select all municipalities in a subregion:</p>")
+                        .css("margin", "10px 0")
+                        .appendTo("div.municipalities div.c-2");
+                    $.each(data.subregions, function (key, subregion) {
+                        var $button = $("<a/>", {
                             id: subregion.abbr,
                             title: subregion.name,
                             style: "margin-right: 8px",
+                            class: "grp-button",
                             text: subregion.abbr
                         })
                         .data("municipalities", subregion.municipalities.split(","))
@@ -53,7 +53,7 @@
                             event.preventDefault();
                             $("#id_municipalities").val($(this).data("municipalities"));
                         })
-                        .appendTo("div.municipalities div.column.span-flexible");
+                        .appendTo("div.municipalities div.c-2");
                     });
             });
         });
