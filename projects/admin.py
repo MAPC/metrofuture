@@ -57,11 +57,11 @@ class ProjectAdmin(reversion.VersionAdmin):
         ('Collaborations', 
             {'fields': ['lead_dept', 'collab_dept', 'collab_ext', 'client', 'funding', ]}),
         ('Regional properties',
-            {'fields': ['municipalities_type', 'municipal_specific', 'municipalities', 'subregions_string', 'community_type_string', ]}),
+            {'fields': ['municipalities_type', 'municipalities', 'subregions_string', 'community_type_string', ]}),
         ('Other project properties',
             {'fields': ['timing', 'status', 'equity', 'equity_comment', ]}),
     ]    
-    list_filter = ['municipalities__subregion', 'municipalities', 'municipalities__community_type', 'lead_dept', 'status', 'goals', 'strategies', ]
+    list_filter = ['municipalities__subregion', 'municipalities', 'municipalities__community_type', 'municipalities_type', 'lead_dept', 'status', 'goals', 'strategies', ]
     date_hierarchy = 'last_modified'
     list_display = ('pk', 'name', 'desc', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'nr_goals', 'nr_subgoals', 'nr_municipalities', 'last_modified',)
     list_editable = ('name', 'desc', 'status', )

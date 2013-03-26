@@ -8,19 +8,6 @@ try:
 except ImportError:
     pass
 
-# Project choices
-PROJECT_STATUS = (
-    ('con', 'Continuing'),
-    ('com', 'Completed'),
-    ('new', 'New'),
-)
-
-MUNICIPALITY_TYPE = (
-    ('m', 'Multiple'),
-    ('s', 'Single'),
-    ('r', 'Regional'),
-)
-
 
 class Department(models.Model):
     """
@@ -169,6 +156,21 @@ class Project(models.Model):
     """
     MetroFuture projects; core class for map
     """
+
+    # Project choices
+    PROJECT_STATUS = (
+        ('con', 'Continuing'),
+        ('com', 'Completed'),
+        ('new', 'New'),
+    )
+
+    MUNICIPALITY_TYPE = (
+        ('m', 'Multiple'),
+        ('s', 'Single'),
+        ('r', 'Region-wide'),
+        ('i', 'Internally Focused'),
+    )
+
     name = models.CharField(max_length=250)
     desc = models.TextField('Short description', blank=True, null=True)
     url = models.URLField('Project URL', blank=True, null=True)
@@ -179,24 +181,20 @@ class Project(models.Model):
     client = models.CharField(max_length=100, blank=True, null=True)
     funding = models.ForeignKey('Funding', blank=True, null=True)
     timing = models.CharField(max_length=50, blank=True, null=True)
-    status = models.CharField(max_length=3, choices=PROJECT_STATUS)
+    status = models.CharField(max_length=3, choices=PROJECT_STATUS, default='new')
     municipalities = models.ManyToManyField(Municipality, blank=True, null=True, related_name='projects')
     municipalities_type = models.CharField(max_length=1, choices=MUNICIPALITY_TYPE)
-    municipal_specific = models.BooleanField(help_text='Counted as a project in a specific municipality')
+    subregions = models.ManyToManyField(Subregion, blank=True, null=True) 
+
+    # INFO: dependencies resolved with JavaScript in form
+    # TODO: add dependency condition to form clean method
+    strategies = models.ManyToManyField(Strategy, blank=True, null=True)
+    substrategies = models.ManyToManyField(SubStrategy, blank=True, null=True)
+    goals = models.ManyToManyField(Goal, blank=True, null=True, verbose_name=u'Goals')
+    subgoals = models.ManyToManyField(SubGoal, blank=True, null=True, verbose_name=u'Subgoals')
 
     equity = models.BooleanField('Equity related')
     equity_comment = models.TextField(null=True, blank=True)
-
-    # FIXME: redundant moved to municipality
-    community_types = models.ManyToManyField(CommunityType, blank=True, null=True)
-    subregions = models.ManyToManyField(Subregion, blank=True, null=True)   
-
-    # FIXME: redundant, field required by client
-    strategies = models.ManyToManyField(Strategy, blank=True, null=True)
-    substrategies = models.ManyToManyField(SubStrategy, blank=True, null=True)
-    subgoals = models.ManyToManyField(SubGoal, blank=True, null=True, verbose_name=u'Subgoals')
-    # FIXME: redundant, field required by client
-    goals = models.ManyToManyField(Goal, blank=True, null=True, verbose_name=u'Goals')
 
     active = models.BooleanField('Shown on map')
 

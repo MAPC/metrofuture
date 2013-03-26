@@ -3,7 +3,7 @@ from django.utils import simplejson
 
 from django.contrib.gis.db.models import Union
 
-from projects.models import Project, Municipality, Subregion, Strategy, SubStrategy, SubGoal, Goal, PROJECT_STATUS
+from projects.models import Project, Municipality, Subregion, Strategy, SubStrategy, SubGoal, Goal
 
 
 def get_filters(request):
@@ -56,7 +56,7 @@ def get_filters(request):
             name = goal.title,  
             subgoals = goal.subgoals_string(),
         )
-    for k,v in PROJECT_STATUS:
+    for k,v in Project.PROJECT_STATUS:
         response['status'][k] = dict(
             name = v
         )
