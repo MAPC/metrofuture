@@ -37,7 +37,7 @@
             // Subregion Buttons
             $.getJSON("/filters/",
                 function (data) {
-                    $("<p>Or select all municipalities in a subregion:</p>")
+                    $("<p class='grp-help'>Or select all municipalities in a subregion:</p>")
                         .css("margin", "10px 0")
                         .appendTo("div.municipalities div.c-2");
                     $.each(data.subregions, function (key, subregion) {
@@ -56,6 +56,37 @@
                         .appendTo("div.municipalities div.c-2");
                     });
             });
+
+            // Equity information, not pretty but works
+            $(".equity_comment .c-2 textarea").after("<p class='grp-help'>Does the project have components that directly impact federal- and state-identified protected classes?</p> \
+            <table style='margin-top: 8px'> \
+                <thead><tr> \
+                    <th style='min-width: 100px'>Federal (FHA)</th> \
+                    <th>State (MGL 151B) - all federal bases plus:</th> \
+                </tr></thead> \
+                <tr> \
+                    <td><ul style='padding-left: 10px'> \
+                        <li style='list-style: disc inside'>Race</li> \
+                        <li style='list-style: disc inside'>Color</li> \
+                        <li style='list-style: disc inside'>National Origin</li> \
+                        <li style='list-style: disc inside'>Religion</li> \
+                        <li style='list-style: disc inside'>Sex</li> \
+                        <li style='list-style: disc inside'>Familial Status</li> \
+                        <li style='list-style: disc inside'>Disability</li> \
+                    </ul></td> \
+                    <td><ul style='padding-left: 10px'> \
+                            <li style='list-style: disc inside'>Ancestry</li> \
+                            <li style='list-style: disc inside'>Age</li> \
+                            <li style='list-style: disc inside'>Marital Status</li> \
+                            <li style='list-style: disc inside'>Source of Income</li> \
+                            <li style='list-style: disc inside'>Sexual Orientation</li> \
+                            <li style='list-style: disc inside'>Gender Identity</li> \
+                            <li style='list-style: disc inside'>Veteran History/ Military Status</li> \
+                            <li style='list-style: disc inside'>Genetic Information</li> \
+                    </ul></td> \
+                </tr> \
+            </table>");
+
         });
 
     }(django.jQuery));
