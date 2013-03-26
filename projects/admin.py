@@ -2,6 +2,7 @@ from django.contrib.gis import admin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.utils.translation import ugettext as _
+from django import forms
 
 import reversion
 import csv
@@ -48,7 +49,23 @@ def export_as_csv(modeladmin, request, queryset):
 export_as_csv.short_description = _('Export selected %(verbose_name_plural)s as CSV file')
 
 
+class ProjectAdminForm(forms.ModelForm):
+    class Meta:
+        model = Project
+
+    def clean_end_date(self):
+        # do something that validates your data
+        date = self.cleaned_data['end_date']
+        status = self.cleaned_data['status']
+        if date == None and status == 'com':
+            raise forms.ValidationError("Project complete, please provide an end date.")
+        return date
+
+
 class ProjectAdmin(reversion.VersionAdmin):
+
+    form = ProjectAdminForm
+
     fieldsets = [
         (None, 
             {'fields': ['name', 'desc', 'url', 'thumbnail', 'active', ]}),
@@ -59,7 +76,7 @@ class ProjectAdmin(reversion.VersionAdmin):
         ('Regional properties',
             {'fields': ['municipalities_type', 'municipalities', 'subregions_string', 'community_type_string', ]}),
         ('Other project properties',
-            {'fields': ['timing', 'status', 'equity', 'equity_comment', ]}),
+            {'fields': ['timing', 'status', 'start_date', 'end_date', 'equity', 'equity_comment', ]}),
     ]    
     list_filter = ['municipalities__subregion', 'municipalities', 'municipalities__community_type', 'municipalities_type', 'lead_dept', 'status', 'goals', 'strategies', ]
     date_hierarchy = 'last_modified'

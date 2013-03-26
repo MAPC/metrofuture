@@ -201,6 +201,9 @@ class Project(models.Model):
     last_modified = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+
     def __unicode__(self):
         return self.name
 
