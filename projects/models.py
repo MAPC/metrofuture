@@ -204,6 +204,14 @@ class Project(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
 
+    # cached query results
+    subregions_string = models.CharField('Subregions', max_length=50, default='')
+    lead_dept_string = models.CharField('Lead Depts', max_length=100, default='')
+    community_type_string = models.CharField('Community Types', max_length=100, default='')
+    nr_subgoals = models.IntegerField('Nr Subgoals', default=0)
+    nr_goals = models.IntegerField('Nr Goals', default=0)
+    nr_municipalities = models.IntegerField('Nr Municipalities', default=0)
+
     def __unicode__(self):
         return self.name
 
@@ -212,9 +220,19 @@ class Project(models.Model):
         verbose_name_plural = 'Projects'
         ordering = ['name']  
 
+    def save(self, *args, **kwargs):
 
-    @property
-    def subregions_string(self):
+        self.subregions_string = self.get_subregions_string()
+        self.lead_dept_string = self.get_lead_dept_string()
+        self.community_type_string = self.get_community_type_string()
+        self.nr_subgoals = self.get_nr_subgoals()
+        self.nr_goals = self.get_nr_goals()
+        self.nr_municipalities = self.get_nr_municipalities()
+
+        super(Project, self).save(*args, **kwargs)
+
+
+    def get_subregions_string(self):
         muni_subregions = [m.subregion.all() for m in self.municipalities.all() for s in m.subregion.all()]
         # flatten list
         subregions = [s.abbr for s in muni_subregions for s in s]
@@ -223,14 +241,12 @@ class Project(models.Model):
         subregions_string = ', '.join(subregions)
         return subregions_string
 
-    @property
-    def lead_dept_string(self):
+    def get_lead_dept_string(self):
         depts = [d.name for d in self.lead_dept.all()]
         depts_string = ', '.join(depts)
         return depts_string
 
-    @property
-    def community_type_string(self):
+    def get_community_type_string(self):
         ct = []
         for m in self.municipalities.all():
             if m.community_type != None:
@@ -241,18 +257,15 @@ class Project(models.Model):
         return ct_string
     # TODO: m2m_changed signal to add supergoals from goals and strategies from substrategies     
 
-    @property
-    def nr_subgoals(self):
+    def get_nr_subgoals(self):
         subgoals = self.goals.all()
         return len(subgoals)
 
-    @property
-    def nr_goals(self):
+    def get_nr_goals(self):
         goals = self.goals.all()
         return len(goals)
 
-    @property
-    def nr_municipalities(self):
+    def get_nr_municipalities(self):
         municipalities = self.municipalities.all()
         return len(municipalities)
 
