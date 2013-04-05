@@ -222,6 +222,8 @@ class Project(models.Model):
 
     def save(self, *args, **kwargs):
 
+        # FIXME: stats access saved object, not the updated form object
+
         self.subregions_string = self.get_subregions_string()
         self.lead_dept_string = self.get_lead_dept_string()
         self.community_type_string = self.get_community_type_string()
@@ -258,7 +260,7 @@ class Project(models.Model):
     # TODO: m2m_changed signal to add supergoals from goals and strategies from substrategies     
 
     def get_nr_subgoals(self):
-        subgoals = self.goals.all()
+        subgoals = self.subgoals.all()
         return len(subgoals)
 
     def get_nr_goals(self):
