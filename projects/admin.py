@@ -54,7 +54,7 @@ class ProjectAdminForm(forms.ModelForm):
         model = Project
 
     def clean_end_date(self):
-        # do something that validates your data
+        # validates data
         date = self.cleaned_data['end_date']
         status = self.cleaned_data['status']
         if date == None and status == 'com':
@@ -80,13 +80,24 @@ class ProjectAdmin(reversion.VersionAdmin):
     ]    
     list_filter = ['municipalities__subregion', 'municipalities', 'municipalities__community_type', 'municipalities_type', 'lead_dept', 'status', 'goals', 'strategies', ]
     date_hierarchy = 'last_modified'
-    list_display = ('pk', 'name', 'desc', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'nr_goals', 'nr_subgoals', 'nr_municipalities', 'last_modified',)
+    list_display = ('pk', 'name', 'desc', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'get_nr_goals', 'get_nr_subgoals', 'get_nr_municipalities', 'last_modified',)   
     list_editable = ('name', 'desc', 'status', )
     search_fields = ['name', 'desc']
     ordering = ['id']
     readonly_fields = ('subregions_string', 'community_type_string',)
     actions = [export_as_csv]
 
+    def lead_dept_string(self, obj):
+        return obj.lead_dept_string
+    lead_dept_string.short_description = 'Lead Depts'
+
+    def subregions_string(self, obj):
+        return obj.subregions_string
+    subregions_string.short_description = 'Subregions'
+
+    def community_type_string(self, obj):
+        return obj.community_type_string
+    community_type_string.short_description = 'Community Types'
 
     def changelist_view(self, request, extra_context=None):
 

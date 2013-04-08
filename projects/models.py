@@ -1,5 +1,6 @@
 from django.contrib.gis.db import models
 from django.utils.translation import ugettext as _
+from django.db.models import Count
 
 # south introspection rules 
 try:
@@ -152,9 +153,23 @@ class SubGoal(models.Model): #SubGoal
         return '%d (%s) %s' % (self.nr, self.goal.abbr, self.title)
 
 
+class ProjectManager(models.Manager):
+    """
+    Custom Manager to aggregate counts for goals and municipalities.
+    """
+
+    def get_query_set(self):
+        return super(ProjectManager,self).get_query_set().annotate(
+            goals_count = Count('goals', distinct=True),
+            subgoals_count = Count('subgoals', distinct=True),
+            municipalities_count = Count('municipalities', distinct=True),
+            )
+
+
 class Project(models.Model):
     """
     MetroFuture projects; core class for map
+    FIXME: strategies and goals are redundant fields
     """
 
     # Project choices
@@ -204,13 +219,7 @@ class Project(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
 
-    # cached query results
-    subregions_string = models.CharField('Subregions', max_length=50, default='')
-    lead_dept_string = models.CharField('Lead Depts', max_length=100, default='')
-    community_type_string = models.CharField('Community Types', max_length=100, default='')
-    nr_subgoals = models.IntegerField('Nr Subgoals', default=0)
-    nr_goals = models.IntegerField('Nr Goals', default=0)
-    nr_municipalities = models.IntegerField('Nr Municipalities', default=0)
+    objects = ProjectManager()
 
     def __unicode__(self):
         return self.name
@@ -220,21 +229,8 @@ class Project(models.Model):
         verbose_name_plural = 'Projects'
         ordering = ['name']  
 
-    def save(self, *args, **kwargs):
-
-        # FIXME: stats access saved object, not the updated form object
-
-        self.subregions_string = self.get_subregions_string()
-        self.lead_dept_string = self.get_lead_dept_string()
-        self.community_type_string = self.get_community_type_string()
-        self.nr_subgoals = self.get_nr_subgoals()
-        self.nr_goals = self.get_nr_goals()
-        self.nr_municipalities = self.get_nr_municipalities()
-
-        super(Project, self).save(*args, **kwargs)
-
-
-    def get_subregions_string(self):
+    @property
+    def subregions_string(self):
         muni_subregions = [m.subregion.all() for m in self.municipalities.all() for s in m.subregion.all()]
         # flatten list
         subregions = [s.abbr for s in muni_subregions for s in s]
@@ -243,12 +239,14 @@ class Project(models.Model):
         subregions_string = ', '.join(subregions)
         return subregions_string
 
-    def get_lead_dept_string(self):
+    @property
+    def lead_dept_string(self):
         depts = [d.name for d in self.lead_dept.all()]
         depts_string = ', '.join(depts)
         return depts_string
 
-    def get_community_type_string(self):
+    @property
+    def community_type_string(self):
         ct = []
         for m in self.municipalities.all():
             if m.community_type != None:
@@ -256,20 +254,25 @@ class Project(models.Model):
         # # remove duplicates (list > set > list)
         ct = sorted(list(set(ct)))
         ct_string = ', '.join(ct)
-        return ct_string
-    # TODO: m2m_changed signal to add supergoals from goals and strategies from substrategies     
+        return ct_string 
 
     def get_nr_subgoals(self):
-        subgoals = self.subgoals.all()
-        return len(subgoals)
+        return self.subgoals_count
+    get_nr_subgoals.admin_order_field = 'subgoals_count'
+    get_nr_subgoals.short_description = 'Nr Subgoals'
+    nr_subgoals = property(get_nr_subgoals)
 
     def get_nr_goals(self):
-        goals = self.goals.all()
-        return len(goals)
+        return self.goals_count
+    get_nr_goals.admin_order_field = 'goals_count'
+    get_nr_goals.short_description = 'Nr Goals'
+    nr_goals = property(get_nr_goals)
 
     def get_nr_municipalities(self):
-        municipalities = self.municipalities.all()
-        return len(municipalities)
+        return self.municipalities_count
+    get_nr_municipalities.admin_order_field = 'municipalities_count'
+    get_nr_municipalities.short_description = 'Nr Municipalities'
+    nr_municipalities = property(get_nr_municipalities)
 
 
     
