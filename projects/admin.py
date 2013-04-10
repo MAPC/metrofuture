@@ -80,7 +80,7 @@ class ProjectAdmin(reversion.VersionAdmin):
     ]    
     list_filter = ['municipalities__subregion', 'municipalities', 'municipalities__community_type', 'municipalities_type', 'lead_dept', 'status', 'goals', 'strategies', ]
     date_hierarchy = 'last_modified'
-    list_display = ('pk', 'name', 'desc', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'get_nr_goals', 'get_nr_subgoals', 'get_nr_municipalities', 'last_modified',)   
+    list_display = ('pk', 'name', 'desc', 'status', 'get_nr_goals', 'get_nr_subgoals', 'get_nr_municipalities', 'last_modified',)   
     list_editable = ('name', 'desc', 'status', )
     search_fields = ['name', 'desc']
     ordering = ['id']
