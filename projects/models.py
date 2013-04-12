@@ -63,6 +63,11 @@ class Municipality(models.Model):
     geometry = models.MultiPolygonField(geography=True)
     objects = models.GeoManager()
 
+    def get_nr_projects(self):
+        return self.projects.count()
+    get_nr_projects.short_description = 'Nr Projects'
+    nr_projects = property(get_nr_projects)
+
     def __unicode__(self):
         return self.name
     
