@@ -153,19 +153,6 @@ class SubGoal(models.Model): #SubGoal
         return '%d (%s) %s' % (self.nr, self.goal.abbr, self.title)
 
 
-class ProjectManager(models.Manager):
-    """
-    Custom Manager to aggregate counts for goals and municipalities.
-    """
-
-    def get_query_set(self):
-        return super(ProjectManager,self).get_query_set().annotate(
-            goals_count = Count('goals', distinct=True),
-            subgoals_count = Count('subgoals', distinct=True),
-            municipalities_count = Count('municipalities', distinct=True),
-            )
-
-
 class Project(models.Model):
     """
     MetroFuture projects; core class for map
@@ -219,8 +206,6 @@ class Project(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
 
-    objects = ProjectManager()
-
     def __unicode__(self):
         return self.name
 
@@ -251,26 +236,23 @@ class Project(models.Model):
         for m in self.municipalities.all():
             if m.community_type != None:
                 ct.append(m.community_type.name)
-        # # remove duplicates (list > set > list)
+        # remove duplicates (list > set > list)
         ct = sorted(list(set(ct)))
         ct_string = ', '.join(ct)
         return ct_string 
 
     def get_nr_subgoals(self):
-        return self.subgoals_count
-    get_nr_subgoals.admin_order_field = 'subgoals_count'
+        return self.subgoals.count()
     get_nr_subgoals.short_description = 'Nr Subgoals'
     nr_subgoals = property(get_nr_subgoals)
 
     def get_nr_goals(self):
-        return self.goals_count
-    get_nr_goals.admin_order_field = 'goals_count'
+        return self.goals.count()
     get_nr_goals.short_description = 'Nr Goals'
     nr_goals = property(get_nr_goals)
 
     def get_nr_municipalities(self):
-        return self.municipalities_count
-    get_nr_municipalities.admin_order_field = 'municipalities_count'
+        return self.municipalities.count()
     get_nr_municipalities.short_description = 'Nr Municipalities'
     nr_municipalities = property(get_nr_municipalities)
 

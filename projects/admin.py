@@ -80,7 +80,7 @@ class ProjectAdmin(reversion.VersionAdmin):
     ]    
     list_filter = ['municipalities__subregion', 'municipalities', 'municipalities__community_type', 'municipalities_type', 'lead_dept', 'status', 'goals', 'strategies', ]
     date_hierarchy = 'last_modified'
-    list_display = ('pk', 'name', 'desc', 'status', 'get_nr_goals', 'get_nr_subgoals', 'get_nr_municipalities', 'last_modified',)   
+    list_display = ('pk', 'name', 'desc', 'status', 'get_nr_goals', 'get_nr_subgoals', 'get_nr_municipalities', 'last_modified',)  
     list_editable = ('name', 'desc', 'status', )
     search_fields = ['name', 'desc']
     ordering = ['id']
@@ -116,35 +116,43 @@ class MunicipalityAdmin(admin.OSMGeoAdmin):
     search_fields = ['name', ]
     exclude = ('geometry',)
 
+
 class CommunityTypeAdmin(admin.ModelAdmin):
     list_display = ('pk', 'abbr', 'name', )
     list_editable = ('abbr', 'name', )
+
 
 class SubGoalAdmin(admin.TabularInline):
     fields = ('nr', 'title', )
     ordering = ['nr']
     model = SubGoal
 
+
 class GoalAdmin(admin.ModelAdmin):
     list_display = ('title',)
     inlines = [SubGoalAdmin]
+
 
 class SubStrategyAdmin(admin.TabularInline):
     fields = ('letter', 'title', )
     ordering = ['strategy', 'letter', ]
     model = SubStrategy
 
+
 class StrategyAdmin(admin.ModelAdmin):
     list_display = ('title', )
     inlines=[SubStrategyAdmin]
+
 
 class SubregionAdmin(admin.ModelAdmin):
     list_display = ('pk', 'abbr', 'name', )
     list_editable = ('abbr', 'name', )
 
+
 class FundingAdmin(reversion.VersionAdmin):
     list_display = ('pk', 'name', )
     list_editable = ('name', )
+
 
 class DepartmentAdmin(reversion.VersionAdmin):
     list_display = ('pk', 'name', )
