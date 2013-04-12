@@ -11,7 +11,8 @@ from projects.models import Project, Subregion, CommunityType, Strategy, Goal, S
 
 
 CSV_FIELD_NAMES = {
-    'projects.project': ['pk', 'name', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'nr_goals', 'nr_subgoals', 'nr_municipalities', 'last_modified', ]
+    'projects.project': ['pk', 'name', 'status', 'lead_dept_string', 'subregions_string', 'community_type_string', 'nr_goals', 'nr_subgoals', 'nr_municipalities', 'last_modified', ],
+    'projects.municipality': ['muni_id', 'name', 'nr_projects', ],
 }
 
 
@@ -113,8 +114,10 @@ class ProjectAdmin(reversion.VersionAdmin):
 
 class MunicipalityAdmin(admin.OSMGeoAdmin):    
     list_display = ('name', 'nr_projects')
+    list_filter = ['subregion',]
     search_fields = ['name', ]
     exclude = ('geometry',)
+    actions = [export_as_csv]
 
 
 class CommunityTypeAdmin(admin.ModelAdmin):
