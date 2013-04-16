@@ -113,7 +113,7 @@ class ProjectAdmin(reversion.VersionAdmin):
 
 
 class MunicipalityAdmin(admin.OSMGeoAdmin):    
-    list_display = ('name', 'nr_projects')
+    list_display = ('name', 'get_nr_new_cont_projects')
     list_filter = ['subregion',]
     search_fields = ['name', ]
     exclude = ('geometry',)
