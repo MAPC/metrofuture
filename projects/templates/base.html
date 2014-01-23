@@ -260,7 +260,7 @@ if (!Array.prototype.indexOf) {
 
 $(document).ready(function() {
 
-  var baseUrl = "http://localhost:8000", 
+  var baseUrl = "http://projects.metrofuture.org", 
       filterdata = {},
       filtermap = {
 
@@ -438,6 +438,7 @@ $(document).ready(function() {
   // init: build filter options
   $.getJSON(baseUrl + "/filters/",
     function (data) {
+      console.log(data);
       // make globally available
       filterdata = data;
       $.each(filterdata, function (filterKey, filter) {
