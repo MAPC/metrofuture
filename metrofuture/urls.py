@@ -33,6 +33,9 @@ urlpatterns = patterns('',
     url(r'^projects/active$',   'projects.views.active',   name='active'),
     url(r'^projects/inactive$', 'projects.views.inactive', name='inactive'),
 
+    url(r'^municipalities/$', 'projects.views.by_municipality', name='by_municipality'),
+    url(r'^subregions/$', 'projects.views.by_subregion', name='by_subregion'),
+
     # API urls
   #  (r'^api/', include(v1_api.urls)),
 

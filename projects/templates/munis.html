@@ -1,0 +1,16 @@
+<ul>
+  {% for muni in mwp %}
+    <li><a href="#{{muni.name}}">{{muni.name}}</a></li>
+  {% endfor %}
+</ul>
+
+{% for muni in mwp %}
+  <h3>
+    <a name="{{ muni.name }}">
+      {{ muni.name }}
+    </a>
+  </h3>
+  {% for project in muni.projects %}
+    {% include '_project.html' with project=project %}
+  {% endfor %}
+{% endfor %}

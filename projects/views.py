@@ -10,13 +10,36 @@ def projects(request):
     projects = Project.objects.all()
     return render(request, 'projects.html', {'projects': projects})
 
+
 def active(request):
     projects = Project.objects.filter(active=True)
     return render(request, 'projects.html', {'projects': projects})
 
+
 def inactive(request):
     projects = Project.objects.filter(active=False)
     return render(request, 'projects.html', {'projects': projects})
+
+
+def by_municipality(request):
+    munis_with_projects = []
+    munis = Municipality.objects.order_by('name')
+    for muni in munis:
+        munis_with_projects.append( { 'name': muni.name, 'projects': muni.projects.all() } )
+
+    return render(request, 'munis.html', { 'mwp': munis_with_projects })
+
+
+# def by_subregion(request):
+#     subregion_projects = {}
+#     subregions = Subregion.objects.all()
+
+#     for subregion in subregions:
+#         munis = Municipality.objects.in_bulk(subregion.muni_string().split(','))
+#         for muni_id, muni in munis.items:
+
+#     return render(request, 'munis.html', { 'mwp': subregion_projects })
+
 
 def get_filters(request):
     """
