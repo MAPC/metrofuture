@@ -1,28 +1,3 @@
 {% for project in projects %}
-  <div class="project">
-
-    <!-- URL OPEN -->
-    {% if project.url %}
-      <a href="{{ project.url }}" target='_blank'>
-    {% endif %}
-
-      <!-- TITLE -->
-      <h3>{{ project.name }}</h3>
-
-    <!-- URL CLOSED -->
-    {% if project.url %}
-      </a>
-    {% endif %}
-
-    {% if project.thumbnail %}
-      <img class='thumbnail' src="{{ project.thumbnail }}">
-    {% endif %}
-
-    {% if project.desc %}
-      <p class='description'>
-        {{ project.desc }}
-      </p>
-    {% endif %}
-
-  </div>
+  {% include '_project.html' with project=project %}
 {% endfor %}
