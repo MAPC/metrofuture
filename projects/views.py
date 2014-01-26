@@ -1,10 +1,14 @@
 from django.http import HttpResponse
 from django.utils import simplejson
+from django.shortcuts import render
 
 from django.contrib.gis.db.models import Union
 
 from projects.models import Project, Municipality, Subregion, Strategy, SubStrategy, SubGoal, Goal
 
+def all(request):
+    projects = Project.objects.all()
+    return render(request, 'all.html', {'projects': projects})
 
 def get_filters(request):
     """
