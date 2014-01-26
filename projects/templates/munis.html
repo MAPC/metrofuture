@@ -5,11 +5,11 @@
 </ul>
 
 {% for muni in mwp %}
-  <h3>
+  <h1>
     <a name="{{ muni.name }}">
       {{ muni.name }}
     </a>
-  </h3>
+  </h1>
   {% for project in muni.projects %}
     {% include '_project.html' with project=project %}
   {% endfor %}

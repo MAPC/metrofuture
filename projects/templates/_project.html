@@ -14,7 +14,7 @@
   {% endif %}
 
   {% if project.thumbnail %}
-    <img class='thumbnail' src="{{ project.thumbnail }}">
+    <img class='thumbnail' src="{{ MEDIA_ROOT }}{{ project.thumbnail }}">
   {% endif %}
 
   {% if project.desc %}
