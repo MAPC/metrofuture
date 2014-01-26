@@ -6,9 +6,17 @@ from django.contrib.gis.db.models import Union
 
 from projects.models import Project, Municipality, Subregion, Strategy, SubStrategy, SubGoal, Goal
 
-def all(request):
+def projects(request):
     projects = Project.objects.all()
-    return render(request, 'all.html', {'projects': projects})
+    return render(request, 'projects.html', {'projects': projects})
+
+def active(request):
+    projects = Project.objects.filter(active=True)
+    return render(request, 'projects.html', {'projects': projects})
+
+def inactive(request):
+    projects = Project.objects.filter(active=False)
+    return render(request, 'projects.html', {'projects': projects})
 
 def get_filters(request):
     """

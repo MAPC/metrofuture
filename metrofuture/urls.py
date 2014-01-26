@@ -29,7 +29,9 @@ urlpatterns = patterns('',
     url(r'^filters/$', 'projects.views.get_filters'),
 
     # returns all projects
-    url(r'^projects/$', 'projects.views.all', name='all'),
+    url(r'^projects/$',         'projects.views.projects', name='all'),
+    url(r'^projects/active$',   'projects.views.active',   name='active'),
+    url(r'^projects/inactive$', 'projects.views.inactive', name='inactive'),
 
     # API urls
   #  (r'^api/', include(v1_api.urls)),
