@@ -32,6 +32,7 @@ urlpatterns = patterns('',
     url(r'^projects/$',         'projects.views.projects', name='all'),
     url(r'^projects/active$',   'projects.views.active',   name='active'),
     url(r'^projects/inactive$', 'projects.views.inactive', name='inactive'),
+    url(r'^projects/recent$', 'projects.views.recent', name='recent'),
 
     url(r'^municipalities/$', 'projects.views.by_municipality', name='by_municipality'),
     url(r'^subregions/$', 'projects.views.by_subregion', name='by_subregion'),

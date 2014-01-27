@@ -11,6 +11,11 @@ def projects(request):
     return render(request, 'projects.html', {'projects': projects})
 
 
+def recent(request):
+    projects = Project.objects.filter(id__gte=280).order_by('name')
+    return render(request, 'projects.html', {'projects': projects})
+
+
 def active(request):
     projects = Project.objects.filter(active=True)
     return render(request, 'projects.html', {'projects': projects})

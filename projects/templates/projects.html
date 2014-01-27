@@ -1,3 +1,58 @@
-{% for project in projects %}
-  {% include '_project.html' with project=project %}
-{% endfor %}
+<!DOCTYPE html>
+
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<style type="text/css">
+  #sidebar {
+    margin-top: 120px;
+    position: fixed;
+    width: 20%;
+    max-width: 300px;
+    overflow-y: scroll;
+    top: 0;
+    bottom: 0;
+    border-right: #E7E7E7 1px solid;
+  }
+  #main {
+    margin-top: 100px;
+  }
+  h1 {
+    padding-top: 100px;
+  }
+</style>
+
+<html>
+<head>
+  <title>Metrofuture In Action</title>
+</head>
+<body>
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="http://mapc.org/metrofuture">
+      <img src="http://www.mapc.org/sites/default/files/mapc_logo.png" width="100px">
+      MetroFuture In Action
+    </a>
+  </div>
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul class="nav navbar-nav">
+      <li><a href="/municipalities"><br>Projects by Municipality</a></li>
+      <li><a href="/subregions"><br>Projects by Subregion</a></li>
+      <li><a href="/projects/recent"><br>Recent Projects</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container" id="main">
+
+  <div class="row">
+    <div class="col-md-9">
+      {% for project in projects %}
+        {% include '_project.html' with project=project %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
