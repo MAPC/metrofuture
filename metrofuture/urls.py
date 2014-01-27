@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'metrofuture.views.home', name='home'),
     # url(r'^metrofuture/', include('metrofuture.foo.urls')),
-    url(r'^$', TemplateView.as_view(template_name='base.html')),
+    url(r'^$', TemplateView.as_view(template_name='index.html')),
 
     # returns all project filters
     url(r'^filters/$', 'projects.views.get_filters'),

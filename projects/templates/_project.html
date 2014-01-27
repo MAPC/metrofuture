@@ -13,14 +13,25 @@
     </a>
   {% endif %}
 
-  {% if project.thumbnail %}
-    <img class='thumbnail' src="{{ MEDIA_ROOT }}{{ project.thumbnail }}">
-  {% endif %}
+  <div class="row">
+    {% if project.thumbnail %}
+      <div class="col-md-3">
+        <img class='thumbnail' src="http://projects.metrofuture.org/media/{{ project.thumbnail }}" width="200">
+      </div>
+    {% endif %}
 
-  {% if project.desc %}
-    <p class='description'>
-      {{ project.desc }}
-    </p>
-  {% endif %}
+    {% if project.desc %}
+      {% if project.thumbnail %}
+        <div class="col-md-6">
+      {% else %}
+        <div class="col-md-9">
+      {% endif %}
+        <p class='description'>
+          {{ project.desc }}
+        </p>
+      </div>
+    {% endif %}
+  </div>
+  <hr/>
 
 </div>

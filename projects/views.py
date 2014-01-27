@@ -25,7 +25,7 @@ def by_municipality(request):
     munis_with_projects = []
     munis = Municipality.objects.order_by('name')
     for muni in munis:
-        munis_with_projects.append( { 'name': muni.name, 'projects': muni.projects.all() } )
+        munis_with_projects.append( { 'name': muni.name.rstrip(), 'projects': muni.projects.all() } )
 
     return render(request, 'munis.html', { 'mwp': munis_with_projects })
 
@@ -36,7 +36,7 @@ def by_subregion(request):
 
     for subregion in subregions:
         projects = Project.objects.filter(subregions__pk=subregion.pk)
-        subregion_projects.append( { 'name': subregion.name, 'projects': projects })
+        subregion_projects.append( { 'name': subregion.name.rstrip(), 'projects': projects })
 
     return render(request, 'munis.html', { 'mwp': subregion_projects })
 
