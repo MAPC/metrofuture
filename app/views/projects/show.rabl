@@ -1,8 +1,9 @@
 object @project
 
 attributes :id,
-           :name,
+           :title,
            :description,
            :status,
            :geography,
            :lead_department
+
