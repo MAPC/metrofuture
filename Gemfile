@@ -7,7 +7,7 @@ gem 'rails', '3.2.13'
 
 gem 'pg'
 gem 'activerecord-postgis-adapter'
-
+gem 'has_scope'
 gem 'rgeo'
 
 gem 'haml'

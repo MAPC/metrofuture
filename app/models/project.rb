@@ -31,6 +31,9 @@ class Project < ActiveRecord::Base
 
   # TODO: Can we get rid of "self" throughout these?
 
+  scope :by_lead_department, -> lead_department { where("projects.lead_department ~* ?", name) }
+  scope :by_status, -> status { where("projects.status ~* ?", status) }
+
   def departments
     [self.lead_department, self.partner_department].compact
   end

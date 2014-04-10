@@ -74,6 +74,7 @@ GEM
       thor (>= 0.13.6)
     haml (4.0.5)
       tilt
+    has_scope (0.5.1)
     highline (1.6.21)
     hike (1.2.3)
     i18n (0.6.1)
@@ -197,6 +198,7 @@ DEPENDENCIES
   factory_girl_rails
   foreman
   haml
+  has_scope
   jquery-rails
   launchy
   net-ssh (= 2.7.0)
