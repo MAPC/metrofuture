@@ -6,6 +6,11 @@ gem 'rails', '3.2.13'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'pg'
+gem 'activerecord-postgis-adapter'
+
+gem 'rgeo'
+
+gem 'haml'
 
 gem 'paperclip', '~> 3.0'
 # TODO gem 'aws-sdk'
@@ -45,6 +50,7 @@ gem 'jquery-rails'
 
 # To use RABL templates for JSON
 gem 'rabl'
+gem 'oj'
 
 # Use unicorn as the app server
 gem 'unicorn'

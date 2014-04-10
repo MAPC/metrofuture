@@ -11,7 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140410000605) do
+ActiveRecord::Schema.define(:version => 20140410143959) do
+
+  create_table "community_subtypes", :force => true do |t|
+    t.string   "name"
+    t.string   "abbr"
+    t.integer  "community_type_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
+  add_index "community_subtypes", ["community_type_id"], :name => "index_community_subtypes_on_community_type_id"
 
   create_table "community_types", :force => true do |t|
     t.string   "name"
@@ -31,6 +41,17 @@ ActiveRecord::Schema.define(:version => 20140410000605) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "municipalities", :force => true do |t|
+    t.string   "name"
+    t.integer  "muni_id"
+    t.spatial  "geom",                 :limit => {:srid=>4326, :type=>"multi_polygon", :geographic=>true}
+    t.integer  "community_subtype_id"
+    t.datetime "created_at",                                                                               :null => false
+    t.datetime "updated_at",                                                                               :null => false
+  end
+
+  add_index "municipalities", ["community_subtype_id"], :name => "index_municipalities_on_community_subtype_id"
 
   create_table "projects", :force => true do |t|
     t.string   "title"
@@ -66,6 +87,14 @@ ActiveRecord::Schema.define(:version => 20140410000605) do
     t.integer  "strategy_id"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+  end
+
+  create_table "subregions", :force => true do |t|
+    t.string   "name"
+    t.string   "abbr"
+    t.spatial  "geom",       :limit => {:srid=>4326, :type=>"multi_polygon", :geographic=>true}
+    t.datetime "created_at",                                                                     :null => false
+    t.datetime "updated_at",                                                                     :null => false
   end
 
 end

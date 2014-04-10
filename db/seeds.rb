@@ -6,7 +6,18 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-models = %w( CommunityType Department FundingSource Strategy )
+require 'fixtures/community_types'
+require 'fixtures/community_subtypes'
+require 'fixtures/departments'
+require 'fixtures/funding_sources'
+require 'fixtures/strategies'
+require 'fixtures/substrategies'
+
+# require 'fixtures/municipalities'
+require 'fixtures/subregions'
+
+
+models = %w( CommunityType CommunitySubtype Department FundingSource Strategy SubStrategy Subregion )
 
 models.each do |class_name|
   model = Module.const_get class_name
@@ -14,164 +25,13 @@ models.each do |class_name|
   model.reset_pk_sequence
 end
 
-community_types = [{id: 1, abbr: "IC",  name: "Inner Core"},
-                   {id: 2, abbr: "MS",  name: "Maturing Suburb"},
-                   {id: 3, abbr: "RUC", name: "Regional Urban Center"},
-                   {id: 4, abbr: "DS",  name: "Developing Suburb"}]
 
-departments     = [{id: 1,  name: "Data Services"},
-                   {id: 2,  name: "Government Affairs"},
-                   {id: 3,  name: "Municipal Governance"},
-                   {id: 4,  name: "Planning"},
-                   {id: 5,  name: "Economic Development"},
-                   {id: 6,  name: "Energy"},
-                   {id: 7,  name: "Environmental"},
-                   {id: 8,  name: "Housing"},
-                   {id: 9,  name: "Land Use"},
-                   {id: 10, name: "Transportation"},
-                   {id: 11, name: "Regional Plan Implementation"},
-                   {id: 12, name: "Public Health"},
-                   {id: 13, name: "Communications"}]
+CommunityType.create    community_types
+CommunitySubtype.create community_subtypes
+Department.create       departments
+FundingSource.create    funding_sources
+Strategy.create         strategies
+SubStrategy.create      substrategies
 
-fundings = [{id: 1 , name: "CDBG Malden"},
-            {id: 2 , name: "DLTA"},
-            {id: 3 , name: "DLTA, Barr Foundation"},
-            {id: 4 , name: "EDA PG"},
-            {id: 5 , name: "EOHED"},
-            {id: 6 , name: "EOHED Regional Strategic Planning Grant"},
-            {id: 7 , name: "General Housing $"},
-            {id: 8 , name: "MAGIC $"},
-            {id: 9 , name: "MassDOT"},
-            {id: 10, name: "MET and UPWP"},
-            {id: 11, name: "MetroWest Community Healthcare Foundation"},
-            {id: 12, name: "Barr Foundation"},
-            {id: 13, name: "Municipal Funds"},
-            {id: 14, name: "South Coast Rail $"},
-            {id: 15, name: "South Coast Rail $, EDA, UPWP"},
-            {id: 16, name: "Sustainable Communities"},
-            {id: 17, name: "Sustianable Communities  / Great Neighborhoods"},
-            {id: 18, name: "Unified Planning Work Program (UPWP)"},
-            {id: 19, name: "Clean Air Mobility"},
-            {id: 20, name: "Great Neighborhoods"},
-            {id: 21, name: "Community Transformation Grant"},
-            {id: 22, name: "Community Transformation Grant"},
-            {id: 23, name: "DPH Health Impact Assessement Grant"},
-            {id: 24, name: "HUD"},
-            {id: 25, name: "Sustainable Communities, Boston Foundation"},
-            {id: 26, name: "Client Funds"},
-            {id: 27, name: "Town of Dedham"},
-            {id: 28, name: "NNPHI and CDC"},
-            {id: 29, name: "EPA Building Blocks"},
-            {id: 30, name: "EOPSS"},
-            {id: 31, name: "Vendor Transaction Fee"},
-            {id: 32, name: "Health Impact Project"},
-            {id: 33, name: "Health Impact Project (RWJF and PEW)"},
-            {id: 34, name: "Kresge Foundation"},
-            {id: 35, name: "Executive Office of Energy and Environ. Affairs"},
-            {id: 36, name: "MA Food Policy Council, MA DAR, Kendall Foundation"},
-            {id: 37, name: "EDA Planning Grant"},
-            {id: 38, name: "District Local Technical Assistance 2014"},
-            {id: 39, name: "MASS DEP"},
-            {id: 40, name: "CIC - Community Innovatoin Challenge"},
-            {id: 41, name: "MEMA - Mass Emergency Management Agency"}]
-
-strategies = [{id: 1,  number: 1,  title: "Implement Coordinated Plans"},
-              {id: 2,  number: 2,  title: "Democratize Information"},
-              {id: 3,  number: 3,  title: "Strengthen Municipal Finance"},
-              {id: 4,  number: 4,  title: "Build Regional Collaboration"},
-              {id: 5,  number: 5,  title: "Enable Compact Growth"},
-              {id: 6,  number: 6,  title: "Improve City Life and School Quality"},
-              {id: 7,  number: 7,  title: "Protect Natural Landscapes"},
-              {id: 8,  number: 8,  title: "Expand Access to Housing"},
-              {id: 9,  number: 9,  title: "Support Healthy Families"},
-              {id: 10, number: 10, title: "Invest in a Skilled Workforce"},
-              {id: 11, number: 11, title: "Focus Economic Growth"},
-              {id: 12, number: 12, title: "Coordinate Transportation Alternatives"},
-              {id: 13, number: 13, title: "Conserve Natural Resources"}]
-
-
-substrategies = [{id: 1,  title: 'Increase municipal planning capacity', strategy_id: 1,  letter: 'A'},
-                 {id: 2,  title: 'Modernize planning and development tools', strategy_id: 1,  letter: 'B'},
-                 {id: 3,  title: 'Establish consistency of plans across all levels', strategy_id: 1,  letter: 'C'},
-                 {id: 4,  title: 'Coordinate sustainable state policies and programs', strategy_id: 1,  letter: 'D'},
-                 {id: 5,  title: 'Foster private sector demand for sustainable development', strategy_id: 1,  letter: 'E'},
-                 {id: 6,  title: 'Align data collection and policymaking', strategy_id: 2,  letter: 'A'},
-                 {id: 7,  title: 'Improve state and local capacity to utilize planning and decision support tools', strategy_id: 2,  letter: 'B'},
-                 {id: 8,  title: 'Support State and Regional Data Intermediaries', strategy_id: 2,  letter: 'C'},
-                 {id: 9,  title: 'Build and maintain strong "information infrastructure', strategy_id: 2,  letter: 'D'},
-                 {id: 10, title: 'Modernize municipal governance structures and practices', strategy_id: 3,  letter: 'A'},
-                 {id: 11, title: 'Strengthen MAPC as a regional resource', strategy_id: 4,  letter: 'A'},
-                 {id: 12, title: 'Support regional collaboration, purchasing, and service delivery', strategy_id: 4,  letter: 'B'},
-                 {id: 13, title: 'Work together to make a safer region', strategy_id: 4,  letter: 'C'},
-                 {id: 14, title: 'Plan together for regionally significant development', strategy_id: 4,  letter: 'D'},
-                 {id: 15, title: 'Plan for compact growth to serve community needs', strategy_id: 5,  letter: 'A'},
-                 {id: 16, title: 'Ensure good design and access', strategy_id: 5,  letter: 'B'},
-                 {id: 17, title: 'Encourage market response to district plans', strategy_id: 5,  letter: 'C'},
-                 {id: 18, title: 'Remove Barriers to Development', strategy_id: 5,  letter: 'D'},
-                 {id: 19, title: 'Increase Vitality of Existing Centers', strategy_id: 5,  letter: 'E'},
-                 {id: 20, title: 'Ensure high quality educational opportunities in urban communities', strategy_id: 6,  letter: 'A'},
-                 {id: 21, title: 'Improve urban public safety', strategy_id: 6,  letter: 'B'},
-                 {id: 22, title: 'Foster sustainable neighborhood redevelopment', strategy_id: 6,  letter: 'C'},
-                 {id: 23, title: 'Improve urban services, maintenance, and functionality', strategy_id: 6,  letter: 'D'},
-                 {id: 24, title: 'Foster urban vitality: arts, culture, shops, & services', strategy_id: 6,  letter: 'E'},
-                 {id: 25, title: 'Improve urban parks and the urban environment', strategy_id: 6,  letter: 'F'},
-                 {id: 26, title: 'Plan for land preservation on a state and regional basis', strategy_id: 7,  letter: 'A'},
-                 {id: 27, title: 'Adopt sustainable land use controls in less-developed areas', strategy_id: 7,  letter: 'G'},
-                 {id: 28, title: 'Develop coordinated regional and local plans for diverse housing production', strategy_id: 8,  letter: 'A'},
-                 {id: 29, title: 'Increase affordable housing production in appropriate locations', strategy_id: 8,  letter: 'B'},
-                 {id: 30, title: 'Link health and planning', strategy_id: 9,  letter: 'A'},
-                 {id: 31, title: 'Broaden universal early education and care', strategy_id: 9,  letter: 'B'},
-                 {id: 32, title: 'Improve access to after-school and out-of-school programs', strategy_id: 9,  letter: 'C'},
-                 {id: 33, title: 'Use school-based programs to help children establish healthy lifestyles', strategy_id: 9,  letter: 'D'},
-                 {id: 34, title: 'Ensure access to healthy food', strategy_id: 9,  letter: 'E'},
-                 {id: 35, title: 'Reduce exposure to environmental contaminants', strategy_id: 9,  letter: 'F'},
-                 {id: 36, title: 'Ensure equitable access to quality health care', strategy_id: 9,  letter: 'G'},
-                 {id: 37, title: 'Coordinate policies to create an edler-friendly region', strategy_id: 9,  letter: 'H'},
-                 {id: 38, title: 'Coordinate and align public higher education curriculum', strategy_id: 10, letter: 'C'},
-                 {id: 39, title: 'Create jobs in MetroFuture-consistent locations', strategy_id: 11, letter: 'A'},
-                 {id: 40, title: 'Capitalize on existing medical and educational institutions', strategy_id: 11, letter: 'B'},
-                 {id: 41, title: 'Support small businesses and entrepreneurs', strategy_id: 11, letter: 'C'},
-                 {id: 41, title: 'Support small businesses and entrepreneurs', strategy_id: 11, letter: 'C'},
-                 {id: 42, title: 'Integrate land use and transportation planning', strategy_id: 12, letter: 'A'},
-                 {id: 43, title: 'Prioritize transit and transportation alternatives', strategy_id: 12, letter: 'B'},
-                 {id: 44, title: 'Establish stable and sufficient financing for all modes', strategy_id: 12, letter: 'C'},
-                 {id: 45, title: 'Promote an efficient and transparent project delivery system', strategy_id: 12, letter: 'D'},
-                 {id: 46, title: 'Establish a comprehensive maintenance program for safety and future cost savings', strategy_id: 12, letter: 'E'},
-                 {id: 47, title: 'Improve the competetiveness of rail freight', strategy_id: 12, letter: 'F'},
-                 {id: 48, title: 'Plan for sustainability', strategy_id: 13, letter: 'A'},
-                 {id: 49, title: 'Implement water/wastewater/stormwater utility "best practices" across the region', strategy_id: 13, letter: 'E'},
-                 {id: 50, title: 'Promote local treatment and recharge of stormwater and wastewater', strategy_id: 13, letter: 'H'},
-                 {id: 51, title: 'Protect the quality of water supplies through source controls and land use planning', strategy_id: 13, letter: 'I'},
-                 {id: 52, title: 'Conserve energy', strategy_id: 13, letter: 'B'},
-                 {id: 53, title: 'Promote the use of renewable resources', strategy_id: 13, letter: 'C'},
-                 {id: 54, title: 'Manage water demand through education, pricing, technical assistance, and regulation', strategy_id: 13, letter: 'D'},
-                 {id: 55, title: 'Ensure that state assistance to local government is sufficient', strategy_id: 3,  letter: 'D'},
-                 {id: 56, title: 'Provide cities and towns with flexibility to raise local revenues', strategy_id: 3,  letter: 'E'},
-                 {id: 57, title: 'Expand the use of reclaimed water and alternative supplies', strategy_id: 13, letter: 'F'},
-                 {id: 58, title: 'Share costs and benefits of development', strategy_id: 4,  letter: 'E'},
-                 {id: 59, title: "Control municipalities' fixed costs", strategy_id: 3,  letter: 'B'},
-                 {id: 60, title: 'Diversify overall housing supply and affordability', strategy_id: 8,  letter: 'C'},
-                 {id: 61, title: 'Connect residents to housing opportunities', strategy_id: 8,  letter: 'D'},
-                 {id: 62, title: 'Preserve, maintain, and upgrade existing affordable housing stock', strategy_id: 8,  letter: 'F'},
-                 {id: 63, title: 'Ensure fair and accessible housing', strategy_id: 8,  letter: 'E'},
-                 {id: 64, title: 'Enable more cost-effective service delivery', strategy_id: 3,  letter: 'C'},
-                 {id: 65, title: 'Reduce the burden of education funding', strategy_id: 3,  letter: 'F'},
-                 {id: 66, title: 'Increase funding for priority land acquisition', strategy_id: 7,  letter: 'B'},
-                 {id: 67, title: 'Support private sector conservation initiatives', strategy_id: 7,  letter: 'C'},
-                 {id: 68, title: 'Create a new generation of farmers through training, technical assistance and access to capital', strategy_id: 7,  letter: 'D'},
-                 {id: 69, title: 'Build a stronger market for local agricultural products', strategy_id: 7,  letter: 'E'},
-                 {id: 70, title: 'Remove regulatory and labor-related barriers to agricultural expansion/diversification', strategy_id: 7,  letter: 'F'},
-                 {id: 71, title: 'Increase the use and impact of Open Space Residential Design', strategy_id: 7,  letter: 'H'},
-                 {id: 72, title: 'Increase capacity and sustainability of public higher education', strategy_id: 10, letter: 'A'},
-                 {id: 73, title: 'Broaden access to public higher education', strategy_id: 10, letter: 'B'},
-                 {id: 74, title: 'Adopt new strategies to improve student performance', strategy_id: 10, letter: 'D'},
-                 {id: 75, title: 'Remove barriers to labor force participation', strategy_id: 10, letter: 'E'},
-                 {id: 76, title: "Position the growing immigrant population as a key asset to the region's economy", strategy_id: 10, letter: 'F'},
-                 {id: 77, title: 'Support older workers and lifelong productivity', strategy_id: 10, letter: 'G'},
-                 {id: 78, title: 'Support individual Asset Building and Financial Literacy', strategy_id: 10, letter: 'H'}]
-
-CommunityType.create community_types
-Department.create    departments
-FundingSource.create fundings
-Strategy.create      strategies
-SubStrategy.create   substrategies
+# Municipality.create   municipalities
+Subregion.create        subregions

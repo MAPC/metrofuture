@@ -29,8 +29,10 @@ class Project < ActiveRecord::Base
   
   validates :title, presence: true, length: { minimum: 3, maximum: 170 }
 
+  # TODO: Can we get rid of "self" throughout these?
+
   def departments
-    [self.lead_department, self.partner_department]
+    [self.lead_department, self.partner_department].compact
   end
 
   def geographies
@@ -39,6 +41,10 @@ class Project < ActiveRecord::Base
 
   def display_geographies
     self.municipalities || self.subregions
+  end
+
+  def display_geography
+    self.display_geographies.first
   end
 
 end

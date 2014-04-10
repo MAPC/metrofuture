@@ -1,5 +1,5 @@
 class SubStrategy < ActiveRecord::Base
-  attr_accessible :title, :letter
+  attr_accessible :title, :letter, :strategy_id, :id
   
   belongs_to :strategy
 

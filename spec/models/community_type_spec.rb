@@ -8,6 +8,8 @@ describe CommunityType do
   
   it { should respond_to :name }
   it { should respond_to :abbr }
+
+  it { should respond_to :community_subtypes }
   
   it { should be_valid }
 
@@ -37,7 +39,7 @@ describe CommunityType do
   end
 
   describe "when abbr is too long" do
-    before { @community_type.abbr = "a" * 70 }
+    before { @community_type.abbr = "a" * 20 }
     it { should_not be_valid }
   end
 
