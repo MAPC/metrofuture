@@ -28,19 +28,4 @@ describe CommunitySubtype do
     it { should_not be_valid }
   end
 
-  describe "when abbr is blank" do
-    before { @subtype.abbr = " " }
-    it { should_not be_valid }
-  end
-
-  describe "when abbr is too short" do
-    before { @subtype.abbr = "a" }
-    it { should_not be_valid }
-  end
-
-  describe "when abbr is too long" do
-    before { @subtype.abbr = "a" * 20 }
-    it { should_not be_valid }
-  end
-
 end

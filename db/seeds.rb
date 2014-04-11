@@ -34,4 +34,6 @@ Strategy.create         strategies
 SubStrategy.create      substrategies
 
 Municipality.create     municipalities
+muni_subtypes
+
 Subregion.create        subregions
