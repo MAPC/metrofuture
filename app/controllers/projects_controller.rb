@@ -2,8 +2,8 @@ class ProjectsController < ApplicationController
 
   #Basic Search
 
-  has_scope :by_lead_department
-  has_scope :by_status
+  has_scope :lead_department
+  has_scope :status
 
   def index
     @projects = apply_scopes(Project).all

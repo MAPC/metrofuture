@@ -7,3 +7,4 @@ attributes :id,
            :geography,
            :lead_department
 
+# node(:geographies) { |project| project.geographies } unless locals[:hide_geographies]

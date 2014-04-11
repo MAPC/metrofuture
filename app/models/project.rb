@@ -29,25 +29,27 @@ class Project < ActiveRecord::Base
   
   validates :title, presence: true, length: { minimum: 3, maximum: 170 }
 
+
+  scope :lead_department, -> lead_department { where("projects.lead_department ~* ?", name) }
+  scope :status,          -> status          { where("projects.status ~* ?", status) }
+
+  
   # TODO: Can we get rid of "self" throughout these?
 
-  scope :by_lead_department, -> lead_department { where("projects.lead_department ~* ?", name) }
-  scope :by_status, -> status { where("projects.status ~* ?", status) }
-
   def departments
-    [self.lead_department, self.partner_department].compact
+    [lead_department, partner_department].compact
   end
 
   def geographies
-    self.municipalities + self.subregions
+    municipalities + subregions
   end
 
   def display_geographies
-    self.municipalities || self.subregions
+    municipalities || subregions
   end
 
   def display_geography
-    self.display_geographies.first
+    display_geographies.first
   end
 
 end
