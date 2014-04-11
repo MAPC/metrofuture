@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140410143959) do
+ActiveRecord::Schema.define(:version => 20140411190253) do
 
   create_table "community_subtypes", :force => true do |t|
     t.string   "name"
@@ -53,6 +53,11 @@ ActiveRecord::Schema.define(:version => 20140410143959) do
 
   add_index "municipalities", ["community_subtype_id"], :name => "index_municipalities_on_community_subtype_id"
 
+  create_table "municipalities_subregions", :force => true do |t|
+    t.integer "municipality_id"
+    t.integer "subregion_id"
+  end
+
   create_table "projects", :force => true do |t|
     t.string   "title"
     t.text     "description"
@@ -91,6 +96,7 @@ ActiveRecord::Schema.define(:version => 20140410143959) do
 
   create_table "subregions", :force => true do |t|
     t.string   "name"
+    t.integer  "muni_id"
     t.string   "abbr"
     t.spatial  "geom",       :limit => {:srid=>4326, :type=>"multi_polygon", :geographic=>true}
     t.datetime "created_at",                                                                     :null => false

@@ -13,11 +13,11 @@ require 'fixtures/funding_sources'
 require 'fixtures/strategies'
 require 'fixtures/substrategies'
 
-# require 'fixtures/municipalities'
+require 'fixtures/municipalities'
 require 'fixtures/subregions'
 
 
-models = %w( CommunityType CommunitySubtype Department FundingSource Strategy SubStrategy Subregion )
+models = %w( CommunityType CommunitySubtype Department FundingSource Municipality Strategy SubStrategy Subregion )
 
 models.each do |class_name|
   model = Module.const_get class_name
@@ -33,5 +33,5 @@ FundingSource.create    funding_sources
 Strategy.create         strategies
 SubStrategy.create      substrategies
 
-# Municipality.create   municipalities
+Municipality.create     municipalities
 Subregion.create        subregions
