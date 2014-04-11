@@ -52,4 +52,33 @@ class Project < ActiveRecord::Base
     display_geographies.first
   end
 
+  def subregion_name
+    subregion_names.first if has_subregions? || muni_subregion_name
+  end
+
+  def muni_subregion_name
+    municipalities.first.subregion_name if has_municipalities?
+  end
+
+  # May come in handy later, perhaps.
+
+  def subregion_names
+    subregions.pluck(:name) if has_subregions?
+  end
+
+  def municipality_names
+    municipalities.pluck(:name) if has_municipalities?
+  end
+
+  def has_subregions?
+    subregions.count > 0
+  end
+
+  def has_municipalities?
+    municipalities.count > 0
+  end
+
+
+
+
 end

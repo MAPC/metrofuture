@@ -12,4 +12,8 @@ class Municipality < ActiveRecord::Base
   def community_type
     community_subtype.community_type unless community_subtype.nil?
   end
+
+  def subregion_name
+    subregions.pluck(:name).first || nil
+  end
 end

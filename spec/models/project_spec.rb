@@ -25,6 +25,7 @@ describe Project do
 
   it { should respond_to :municipalities }
   it { should respond_to :subregions }
+  it { should respond_to :subregion }
 
   it { should respond_to :geographies }
   it { should respond_to :display_geographies }

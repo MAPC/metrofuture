@@ -1,9 +1,21 @@
 object @project
 
 attributes :id,
-           :title,
+           :active,
+           :client,
            :description,
+           :end_date,
+           :equity_comment,
+           :equity_focus,
+           :external_collaborator,
+           :funding_source,
+           :start_date,
            :status,
-           :lead_department
+           :thumbnail,
+           :thumbnail_file_name,
+           :title,
+           :url,
+           :created_at,
+           :updated_at
 
-node(:geographies) { |project| project.geographies } unless locals[:hide_geographies]
+node(:subregion) {|p| p.subregion_name }
