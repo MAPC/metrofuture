@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140411190253) do
+ActiveRecord::Schema.define(:version => 20140411203621) do
 
   create_table "community_subtypes", :force => true do |t|
     t.string   "name"
@@ -53,10 +53,19 @@ ActiveRecord::Schema.define(:version => 20140411190253) do
 
   add_index "municipalities", ["community_subtype_id"], :name => "index_municipalities_on_community_subtype_id"
 
-  create_table "municipalities_subregions", :force => true do |t|
+  create_table "municipalities_projects", :id => false, :force => true do |t|
+    t.integer "municipality_id"
+    t.integer "project_id"
+  end
+
+  add_index "municipalities_projects", ["municipality_id", "project_id"], :name => "index_municipalities_projects_on_municipality_id_and_project_id"
+
+  create_table "municipalities_subregions", :id => false, :force => true do |t|
     t.integer "municipality_id"
     t.integer "subregion_id"
   end
+
+  add_index "municipalities_subregions", ["municipality_id", "subregion_id"], :name => "index_municipalities_subregions_on_muni_id_and_subregion_id"
 
   create_table "projects", :force => true do |t|
     t.string   "title"
@@ -78,6 +87,13 @@ ActiveRecord::Schema.define(:version => 20140411190253) do
     t.datetime "created_at",             :null => false
     t.datetime "updated_at",             :null => false
   end
+
+  create_table "projects_subregions", :id => false, :force => true do |t|
+    t.integer "project_id"
+    t.integer "subregion_id"
+  end
+
+  add_index "projects_subregions", ["project_id", "subregion_id"], :name => "index_projects_subregions_on_project_id_and_subregion_id"
 
   create_table "strategies", :force => true do |t|
     t.integer  "number"
