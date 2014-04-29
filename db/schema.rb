@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140411203621) do
+ActiveRecord::Schema.define(:version => 20140429171833) do
 
   create_table "community_subtypes", :force => true do |t|
     t.string   "name"
@@ -26,6 +26,13 @@ ActiveRecord::Schema.define(:version => 20140411203621) do
   create_table "community_types", :force => true do |t|
     t.string   "name"
     t.string   "abbr"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "counties", :force => true do |t|
+    t.string   "name"
+    t.string   "fips"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
@@ -94,6 +101,14 @@ ActiveRecord::Schema.define(:version => 20140411203621) do
   end
 
   add_index "projects_subregions", ["project_id", "subregion_id"], :name => "index_projects_subregions_on_project_id_and_subregion_id"
+
+  create_table "regions", :force => true do |t|
+    t.string   "name"
+    t.string   "rpa_name"
+    t.string   "abbr"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "strategies", :force => true do |t|
     t.integer  "number"

@@ -3,6 +3,7 @@ class Municipality < ActiveRecord::Base
 
   belongs_to :community_subtype
   has_and_belongs_to_many :subregions
+  belongs_to :county
 
   GEOFACTORY = RGeo::Geographic.spherical_factory(srid: 4326)
   set_rgeo_factory_for_column(:geom, GEOFACTORY)
