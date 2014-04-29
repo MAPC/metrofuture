@@ -7,13 +7,13 @@ class CreateRegions < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    create_table :municipalities_regions, id: false do |t|
+      t.integer :municipality_id
+      t.integer :region_id
+    end
   end
 
-  def up
-    add_column :municipalities, :region_id, :integer
-  end
+  # COPY municipalities_regions FROM '/Users/mapcuser/Projects/MetroFuture In Action/in-action/db/fixtures/relations/municipalities_regions.csv' DELIMITER ',' CSV HEADER;
 
-  def down
-    remove_column :municipalities, :region_id
-  end
 end

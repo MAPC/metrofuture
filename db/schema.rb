@@ -67,6 +67,11 @@ ActiveRecord::Schema.define(:version => 20140429171833) do
 
   add_index "municipalities_projects", ["municipality_id", "project_id"], :name => "index_municipalities_projects_on_municipality_id_and_project_id"
 
+  create_table "municipalities_regions", :id => false, :force => true do |t|
+    t.integer "municipality_id"
+    t.integer "region_id"
+  end
+
   create_table "municipalities_subregions", :id => false, :force => true do |t|
     t.integer "municipality_id"
     t.integer "subregion_id"

@@ -15,9 +15,11 @@ require 'fixtures/substrategies'
 
 require 'fixtures/municipalities'
 require 'fixtures/subregions'
+require 'fixtures/regions'
+require 'fixtures/counties'
 
 
-models = %w( CommunityType CommunitySubtype Department FundingSource Municipality Strategy SubStrategy Subregion )
+models = %w( County ) # CommunityType CommunitySubtype Department FundingSource Municipality Strategy SubStrategy Subregion Region
 
 models.each do |class_name|
   model = Module.const_get class_name
@@ -26,14 +28,16 @@ models.each do |class_name|
 end
 
 
-CommunityType.create    community_types
-CommunitySubtype.create community_subtypes
-Department.create       departments
-FundingSource.create    funding_sources
-Strategy.create         strategies
-SubStrategy.create      substrategies
+# CommunityType.create    community_types
+# CommunitySubtype.create community_subtypes
+# Department.create       departments
+# FundingSource.create    funding_sources
+# Strategy.create         strategies
+# SubStrategy.create      substrategies
 
-Municipality.create     municipalities
-muni_subtypes
+# Municipality.create     municipalities
+# muni_subtypes
 
-Subregion.create        subregions
+# Subregion.create        subregions
+# Region.create           regions
+County.create(counties, without_protection: true)

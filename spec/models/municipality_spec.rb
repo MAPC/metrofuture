@@ -13,7 +13,8 @@ describe Municipality do
   it { should respond_to :community_subtype }
   it { should respond_to :community_type }
   it { should respond_to :county }
-  
+
+  it { should respond_to :regions }
   it { should respond_to :subregions }
 
 
