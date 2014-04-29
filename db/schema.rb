@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(:version => 20140429171833) do
     t.integer  "community_subtype_id"
     t.datetime "created_at",                                                                               :null => false
     t.datetime "updated_at",                                                                               :null => false
+    t.integer  "county_id"
   end
 
   add_index "municipalities", ["community_subtype_id"], :name => "index_municipalities_on_community_subtype_id"
